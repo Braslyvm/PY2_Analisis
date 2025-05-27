@@ -13,7 +13,6 @@ namespace PY2_Espere_pronto_le_antendemos
         public int IdCita { get; set; }
         public int IdConsultorio { get; set; }
         public int IdEspecialidad { get; set; }
-        public DateTime HoraInicio { get; set; }
         public int IdPaciente { get; set; }
 
         public Cita(int idConsultorio, int idEspecialidad, DateTime horaInicio, int idPaciente)

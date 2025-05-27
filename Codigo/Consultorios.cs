@@ -26,7 +26,7 @@ namespace PY2_Espere_pronto_le_antendemos
             IdEspecialidades = new List<int>();
         }
 
-        public bool CerrarConsultorio(int IdCosultorio)
+        public bool CerrarConsultorio()
         {
             if (ConsultoriosOpen > 1 && EstadoConsultorio)
             {
@@ -40,7 +40,7 @@ namespace PY2_Espere_pronto_le_antendemos
             }
         }
 
-        public bool AbrirConsultorio(int IdCosultorio)
+        public bool AbrirConsultorio()
         {
             if (ConsultoriosOpen > 1 && !EstadoConsultorio)
             {
