@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PY_Analisis")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed9bd9e671f41d00b593a0f6ee467d05399dc7ce")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+effc09523441541407c8177cf35e01d1bdf00b3d")]
 [assembly: System.Reflection.AssemblyProductAttribute("PY_Analisis")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PY_Analisis")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
