@@ -7,7 +7,6 @@ namespace PY_Analisis.Controllers
     {
         //Listas de objetos 
         public static List<Especialidad> Especialidades = new();
-        public static List<Consultorios> Consultorios = new();
 
         //metodos 
         public IActionResult CrearEspecialidad(string nombre, TimeOnly duracion)
@@ -19,7 +18,10 @@ namespace PY_Analisis.Controllers
             Especialidades.Add(nuevaEspecialidad);
             return true;
         }
-        public IActionResult CreearConsultorio ()
+        
+
+
+
         
         // metodos auxiliares de la clase 
          public static int ObtenerSegundosTotales(TimeOnly duracion)

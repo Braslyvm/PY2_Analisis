@@ -10,13 +10,13 @@ namespace AGBACKEND
     ///
     /// </summary>
     public class Consultorios
-    {   
+    {
         private static int lastID = 0;//contador de consultorios para id automatica
         private static int ConsultoriosOpen = 0;
         public int IdConsultorio { get; set; }
         public bool EstadoConsultorio { get; set; }
         public List<int>? IdEspecialidades { get; set; }
-        
+
         public Consultorios()
         {
             lastID++;
