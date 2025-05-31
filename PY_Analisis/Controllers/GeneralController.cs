@@ -17,7 +17,7 @@ public class GeneralController : Controller
     {
         return (int)duracion.ToTimeSpan().TotalSeconds;
     }
-     public IActionResult Index()
+    public IActionResult Index()
     {
         return View();
     }
@@ -33,18 +33,33 @@ public class GeneralController : Controller
     {
         return View();
     }
-            public IActionResult AgregarPacientes()
+    public IActionResult AgregarPacientes()
     {
-       return PartialView("AgregarPacientes");
+        return PartialView("AgregarPacientes");
     }
-     public IActionResult AgregarEspecialidad()
+    public IActionResult AgregarEspecialidad()
     {
-       return PartialView("AgregarEspecialidad");
+        return PartialView("AgregarEspecialidad");
     }
-     public IActionResult CrearConsultorio()
+    public IActionResult CrearConsultorio()
     {
-       return PartialView("CrearConsultorio");
+        return PartialView("CrearConsultorio");
+    }
+
+
+
+
+    public void cargar()
+    {
+        
+        
+        
     }
 
     }  
+
+
+
+
+
     
