@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AGBACKEND
-{
+namespace AGBACKEND;
+
     public class Paciente
     {
         private static int lastIdPaciente = 0;
@@ -28,4 +28,3 @@ namespace AGBACKEND
             return true;
         }
     }
-}

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AGBACKEND
-{
+namespace AGBACKEND;
+
     public class Especialidad
     {
         private static int lastIdEspecialidad = 0;
@@ -21,4 +21,3 @@ namespace AGBACKEND
             Duracion = duracion;
         }
     }
-}

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AGBACKEND
-{
+namespace AGBACKEND;
+
     /// <summary>
     ///
     /// </summary>
@@ -75,5 +75,4 @@ namespace AGBACKEND
 
             return false;
         }
-    }
 }

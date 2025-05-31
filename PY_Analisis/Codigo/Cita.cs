@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AGBACKEND
-{
+namespace AGBACKEND;
+
     public class Cita
     {
         private static int lastIdCita = 0;
@@ -25,4 +25,3 @@ namespace AGBACKEND
             IdPaciente = idPaciente;
         }
     }
-}

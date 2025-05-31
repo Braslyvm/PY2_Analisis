@@ -6,19 +6,34 @@ namespace PY_Analisis.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+      public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult Privacy()
+    public IActionResult Sala()
     {
         return View();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    // metodos get formularios 
+
+    public IActionResult CrearEspecialidad()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View();
     }
-}
+            public IActionResult AgregarPacientes()
+    {
+       return PartialView("AgregarPacientes");
+    }
+     public IActionResult AgregarEspecialidad()
+    {
+       return PartialView("AgregarEspecialidad");
+    }
+     public IActionResult CrearConsultorio()
+    {
+       return PartialView("CrearConsultorio");
+    }
+
+    }  
+
