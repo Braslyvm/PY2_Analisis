@@ -92,3 +92,14 @@ C:\Users\MSI Stealth Studio\Desktop\trabajo\PY2_Analisis\PY_Analisis\obj\Debug\n
 C:\Users\MSI Stealth Studio\Desktop\trabajo\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.pdb
 C:\Users\MSI Stealth Studio\Desktop\trabajo\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.genruntimeconfig.cache
 C:\Users\MSI Stealth Studio\Desktop\trabajo\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\ref\PY_Analisis.dll
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.AssemblyInfoInputs.cache
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.AssemblyInfo.cs
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.csproj.CoreCompileInputs.cache
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.RazorAssemblyInfo.cache
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.RazorAssemblyInfo.cs
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.sourcelink.json
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.dll
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\refint\PY_Analisis.dll
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.pdb
