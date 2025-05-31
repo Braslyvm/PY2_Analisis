@@ -42,7 +42,7 @@ namespace PY2_Espere_pronto_le_antendemos
 
         public bool AbrirConsultorio()
         {
-            if (ConsultoriosOpen > 1 && !EstadoConsultorio)
+            if (ConsultoriosOpen >= 1 && !EstadoConsultorio)
             {
                 EstadoConsultorio = true;
                 ConsultoriosOpen++;
