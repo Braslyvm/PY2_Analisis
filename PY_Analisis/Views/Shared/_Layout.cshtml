@@ -1,12 +1,16 @@
 ﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - TuApp</title>
     <link rel="stylesheet" href="~/css/Bienvenida.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("Styles", required: false)  <!-- Aquí agregas los estilos adicionales -->
 </head>
 <body>
     @RenderBody()
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

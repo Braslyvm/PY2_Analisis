@@ -6,18 +6,35 @@
     <source src="~/videos/fondo.mp4" type="video/mp4" />
 </video>
 
-
 <div class= "contenido"> 
-    <button class="button-inicio" id="botton-Consultorio" >Crear consultorio</button>
+    <form asp-controller="Home" asp-action="CrearConsultorio" method="post">
+        <button type="submit" id="Botton-CrearConsultorio" class="button-inicio">Crear consultorio</button>
+    </form>
     <button class="button-inicio" id="botton-Paciente">Agregar paciente</button>
     <button class="button-inicio"  id="botton-Especialidad" >Agregar especialidad</button>
 </div>
 
-
 <div id="modalContainer"></div>
 
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+}
+
 @section Scripts {
-<script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        // Mensaje éxito en verde
+        @if (TempData["Mensaje"] != null)
+        {
+            <text>toastr.success("@TempData["Mensaje"]");</text>
+        }
+
+        // Mensaje error en rojo
+        @if (TempData["Error"] != null)
+        {
+            <text>toastr.error("@TempData["Error"]");</text>
+        }
     document.getElementById("botton-Paciente").addEventListener("click", function () {
     fetch('/Home/AgregarPacientes')
         .then(response => response.text())
@@ -54,23 +71,6 @@
             });
         });
     })
-    document.getElementById("botton-Consultorio").addEventListener("click", function () {
-    fetch('/Home/CrearConsultorio')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("modalContainer").innerHTML = html;
-            const modal = document.getElementById("modalConsultorio");
-            modal.style.display = "block";
 
-            modal.querySelector(".close").addEventListener("click", () => {
-                modal.style.display = "none";
-            });
-            window.addEventListener("click", event => {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
-        });
-    })
 </script>
 }
