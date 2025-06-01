@@ -73,12 +73,6 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
     [HttpPost]
-    public IActionResult CrearConsultorio(string nuevoPaciente)
-    {
-        return PartialView("CrearConsultorio");
-    }
-    // metodos get formularios 
-
 
     public IActionResult AgregarPacientes()
     {
@@ -88,6 +82,11 @@ public class HomeController : Controller
     {
         return PartialView("AgregarEspecialidad");
     }
+    public IActionResult consultorio()
+    {
+        return PartialView("consultorio", ListaConsultorios);
+    }
+
     public async Task CargarPaciente()
     {
         string ruta = Path.Combine(Directory.GetCurrentDirectory(), "ArchivosJSON", "Pacientes.json");
@@ -110,7 +109,7 @@ public class HomeController : Controller
         }
     }
 
- public IActionResult CrearConsultorio()
+    public IActionResult CrearConsultorio()
     {
         if (ListaConsultorios.Count >= 15)
         {
@@ -125,7 +124,44 @@ public class HomeController : Controller
             TempData["Mensaje"] = "Se ha creado el consultorio exitosamente.";
         }
 
-         return RedirectToAction("Sala");
+        return RedirectToAction("Sala");
+    }
+
+    public IActionResult EliminarEspecialidadDeConsultorio(int idConsultorio, int idEspecialidad){
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
+        if (consultorio == null){
+            TempData["Error"] = "Consultorio no encontrado.";
+            return RedirectToAction("Sala");
+        }
+        if (consultorio.EliminarEspecialidad(idEspecialidad)){
+            TempData["Mensaje"] = "Especialidad eliminada exitosamente.";
+        }
+        else{
+            TempData["Error"] = "La especialidad no estaba registrada en este consultorio.";
+        }
+        return RedirectToAction("Sala");
+    }
+    [HttpPost]
+    public IActionResult AgregarEspecialidadAConsultorio(int idConsultorio, int idEspecialidad)
+    {
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
+        if (consultorio == null){
+            TempData["Error"] = "Consultorio no encontrado.";
+            return RedirectToAction("Sala");
+        }
+
+        if (consultorio.IdEspecialidades.Count >= 5){
+            TempData["Error"] = "Este consultorio ya tiene el máximo de especialidades.";
+            return RedirectToAction("Sala");
+        }
+
+        if (consultorio.RegistrarEspecialidad(idEspecialidad)) {
+            TempData["Mensaje"] = "Especialidad agregada exitosamente.";
+        }
+        else {
+            TempData["Error"] = "La especialidad ya está registrada en este consultorio.";
+        }
+        return RedirectToAction("Sala");
     }
 }
 
