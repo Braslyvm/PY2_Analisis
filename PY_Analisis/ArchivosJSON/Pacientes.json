@@ -1,14 +1,17 @@
 [
   {
-    "Nombre": "Neurologia",
-    "Apellido": "17:00:45"
+    "Nombre": "Prueba1",
+    "Apellido": "Gómez",
+    "Cedula": 123456
   },
   {
     "Nombre": "prueba2",
-    "Apellido": "17:00:45"
+    "Apellido": "Martínez",
+    "Cedula": 654321
   },
   {
     "Nombre": "prueba3",
-    "Apellido": "17:00:45"
+    "Apellido": "López",
+    "Cedula": 789012
   }
 ]
