@@ -1,14 +1,15 @@
 [
     {
         "Nombre": "Neurologia",
-        "Apellido": "17:00:45"
+        "Duracion": "17:00:45"
     },
     {
         "Nombre": "prueba2",
-        "Apellido": "17:00:45"
+        "Duracion": "17:00:45"
     },
     {
         "Nombre": "prueba3",
-        "Apellido": "17:00:45"
+        "Duracion": "17:00:45"
     }
+
 ]
