@@ -1,15 +1,14 @@
 [
-    {
-        "Nombre": "Neurologia",
-        "Duracion": "17:00:45"
-    },
-    {
-        "Nombre": "prueba2",
-        "Duracion": "17:00:45"
-    },
-    {
-        "Nombre": "prueba3",
-        "Duracion": "17:00:45"
-    }
-
+  {
+    "Nombre": "Neurologia",
+    "Duracion": "17:00:45"
+  },
+  {
+    "Nombre": "prueba2",
+    "Duracion": "17:00:45"
+  },
+  {
+    "Nombre": "prueba3",
+    " Duracion": "17:00:45"
+  }
 ]

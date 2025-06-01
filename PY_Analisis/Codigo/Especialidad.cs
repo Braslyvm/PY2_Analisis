@@ -8,7 +8,7 @@ namespace AGBACKEND;
 
     public class Especialidad
     {
-        private static int lastIdEspecialidad = 0;
+        public static int lastIdEspecialidad = 0;
         public int IdEspecialidad { get; set; }
         public string Nombre { get; set; }
         public TimeOnly Duracion { get; set; }

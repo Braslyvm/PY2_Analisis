@@ -28,10 +28,14 @@ public class HomeController : Controller
     }
         return View(ListaPaciente);
     }
-      [HttpPost]
+     
    [HttpPost]
     public IActionResult AgregarEspecialidad(string nombre, string duracion)
-    {
+    {    if (ListaPaciente.Any(p => p.Nombre == nombre ) )
+        {
+            ModelState.AddModelError("Especialidad", "No es posible registrar duplicados de especialidad.");
+            //return PartialView("AgregarPacientes"); redireccionar a donde corresponda
+        }
         if (TimeOnly.TryParse(duracion, out TimeOnly duracionTime))
         {
             var nuevaEspecialidad = new Especialidad(nombre, duracionTime);
@@ -43,16 +47,33 @@ public class HomeController : Controller
     {
         Console.WriteLine($"ID: {especialidad.IdEspecialidad}, Nombre: {especialidad.Nombre}, Duración: {especialidad.Duracion}");
     }
-
-         
             return RedirectToAction("AgregarEspecialidad");
         }
-
         ModelState.AddModelError("", "Formato de duración no válido.");
-        return View("AgregarPacientes");
+         return RedirectToAction("Sala");
     }
 
-
+    [HttpPost]  
+    public IActionResult AgregarPacientes(string nombre, string apellido, int cedula)
+    {   if (ListaPaciente.Any(p => p.Cedula == cedula))
+        {
+            ModelState.AddModelError("Cedula", "La cédula ya está registrada.");
+            //return PartialView("AgregarPacientes"); redireccionar a donde corresponda
+        }
+        var nuevoPaciente = new Paciente(nombre, apellido,cedula); 
+        ListaPaciente.Add(nuevoPaciente);  
+        Console.WriteLine("Nueva PACIENTE agregada:");
+             foreach (var paciente in ListaPaciente)
+        {
+            Console.WriteLine($"ID: {paciente.IdPaciente}, Nombre: {paciente.Nombre}, Apellido: {paciente.Apellido},cedula: {paciente.Cedula}");
+        }
+             return RedirectToAction("Sala");
+        }
+        [HttpPost]
+        public IActionResult CrearConsultorio()
+        {
+            return PartialView("CrearConsultorio");
+        }
     // metodos get formularios 
 
   
