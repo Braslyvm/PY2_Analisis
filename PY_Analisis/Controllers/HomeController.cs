@@ -70,7 +70,7 @@ public class HomeController : Controller
              return RedirectToAction("Sala");
         }
         [HttpPost]
-        public IActionResult CrearConsultorio()
+        public IActionResult CrearConsultorio(string nuevoPaciente)
         {
             return PartialView("CrearConsultorio");
         }
