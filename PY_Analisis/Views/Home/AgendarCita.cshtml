@@ -1,0 +1,32 @@
+<div id="modalCitas" class="modal-Citas">
+    <div class="modal-content-Citas">
+        <span class="close">&times;</span>
+        <h2>Agendar Cita</h2>
+        <div class="modal-scroll">
+            @if (Model.Count != 0)
+            {
+                @foreach (var paciente in Model)
+                {
+                    <div class="paciente-card">
+                        <h3>Paciente @paciente.Nombre @paciente.Apellido</h3>
+                        <form asp-action="AgendarCita" asp-controller="Home" method="post">
+                            <input type="hidden" name="idPaciente" value="@paciente.IdPaciente" />
+                            <label>Especialidad:</label>
+                            <select name="idEspecialidad">
+                                @foreach (var especialidad in PY_Analisis.Controllers.HomeController.ListaEspecialidad)
+                                {
+                                    <option value="@especialidad.IdEspecialidad">@especialidad.Nombre (@especialidad.Duracion)</option>
+                                }
+                            </select>
+                            <button type="submit">Agendar Cita</button>
+                        </form>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No hay pacientes registrados.</p>
+            }
+        </div>
+    </div>
+</div>

@@ -13,6 +13,9 @@ public class HomeController : Controller
     public static List<Paciente> ListaPaciente { get; set; } = new List<Paciente>();
     public static List<Especialidad> ListaEspecialidad { get; set; } = new List<Especialidad>();
     public static List<Consultorios> ListaConsultorios { get; set; } = new List<Consultorios>();
+    public static List<Cita> Citas { get; set; } = new List<Cita>();
+
+
     private static bool datosCargados = false;
     public IActionResult Index()
     {
@@ -72,7 +75,7 @@ public class HomeController : Controller
         }
         return RedirectToAction("Sala");
     }
-    [HttpPost]
+   
 
     public IActionResult AgregarPacientes()
     {
@@ -163,6 +166,40 @@ public class HomeController : Controller
         }
         return RedirectToAction("Sala");
     }
+
+    
+   public IActionResult AgendarCita()
+{
+    return PartialView("AgendarCita", ListaPaciente);
+}
+
+    [HttpPost]
+    public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
+    {
+        var paciente = ListaPaciente.FirstOrDefault(p => p.IdPaciente == idPaciente);
+        if (paciente == null)
+        {
+            TempData["Error"] = "Paciente no encontrado.";
+            return RedirectToAction("Sala");
+        }
+
+       
+        if (Citas.Any(c => c.IdEspecialidad == idEspecialidad && c.IdPaciente == idPaciente))
+        {
+            TempData["Error"] = "El paciente ya tiene una cita asignada en esta especialidad.";
+            return RedirectToAction("Sala");
+        }
+
+        var nuevaCita = new Cita(idPaciente, idEspecialidad);
+        Citas.Add(nuevaCita);
+
+        Console.WriteLine($"Nueva cita agendada: ID:{nuevaCita.IdCita}, Especialidad:{idEspecialidad}, Paciente:{idPaciente}");
+        TempData["Mensaje"] = "Cita agendada exitosamente.";
+
+        return RedirectToAction("Sala");
+    }
+
+    
 }
 
     

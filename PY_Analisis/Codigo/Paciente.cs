@@ -23,10 +23,5 @@ namespace AGBACKEND;
             Cedula= cedula;
         }
 
-        public bool AgendarCita(int idConsultorio, int idEspecialidad)
-        {
-            var cita = new Cita(idConsultorio, idEspecialidad, this.IdPaciente);
-            Citas.Add(cita);
-            return true;
-        }
+      
     }
