@@ -2,116 +2,140 @@
     ViewData["Title"] = "Sala de consultorios";
 }
 
+<!-- Bootstrap 4.3 CSS (al principio para que puedas sobreescribir luego) -->
+@section Styles {
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+}
+
+<!-- Fondo de video -->
 <video class="video-background2" autoplay muted loop>
     <source src="~/videos/fondo.mp4" type="video/mp4" />
 </video>
 
-<div class= "contenido"> 
-    <form asp-controller="Home" asp-action="CrearConsultorio" method="post">
-        <button type="submit" id="Botton-CrearConsultorio" class="button-inicio">Crear consultorio</button>
-    </form>
-    <button class="button-inicio" id="botton-Paciente">Agregar paciente</button>
-    <button class="button-inicio"  id="botton-Especialidad" >Agregar especialidad</button>
-    <button class="button-inicio"  id="botton-consultorio" >Ver consultorio</button>
-    <button class="button-inicio" id="botton-AgendarCita">Agendar Cita</button>
+<nav class="navbar navbar-light navbar-expand-md " style="background-color: #5e97c0;">
+  <a class="navbar-brand" href="#">Consultorios</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-</div>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto">
+        <form asp-controller="Home" asp-action="CrearConsultorio" method="post" class="form-inline mb-0">
+  <button type="submit" id="Botton-CrearConsultorio" class="nav-item nav-link" style="background:none; border:none; padding:0; cursor:pointer;">
+    Crear consultorio
+  </button>
+</form>
+        <a class="nav-item nav-link" id="botton-Paciente">Agregar paciente</a>
+        <a class="nav-item nav-link" id="botton-Especialidad">Agregar especialidad</a>
+        <a class="nav-item nav-link" id="botton-consultorio">Ver consultorio</a>
+        <a class="nav-item nav-link" id="botton-AgendarCita">Agendar Cita</a>
+    </div>
+  </div>
+</nav>
+
+
 
 <div id="modalContainer"></div>
-<div id="modalContainer"></div>
 
-@section Styles {
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-}
 
 @section Scripts {
+ 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 
     <script>
-        // Mensaje éxito en verde
         @if (TempData["Mensaje"] != null)
         {
             <text>toastr.success("@TempData["Mensaje"]");</text>
         }
 
-        // Mensaje error en rojo
         @if (TempData["Error"] != null)
         {
             <text>toastr.error("@TempData["Error"]");</text>
         }
-    document.getElementById("botton-consultorio").addEventListener("click", function () {
-    fetch('/Home/consultorio')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("modalContainer").innerHTML = html;
-            const modal = document.getElementById("modalConsultorio");
-            modal.style.display = "block";
 
-            modal.querySelector(".close").addEventListener("click", () => {
-                modal.style.display = "none";
-            });
-            window.addEventListener("click", event => {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
+         document.getElementById("botton-AgendarCita").addEventListener("click", function () {
+            fetch('/Home/AgendarCita')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("modalContainer").innerHTML = html;
+                    const modal = document.getElementById("modalCitas");
+                    modal.style.display = "block";
+
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                    window.addEventListener("click", event => {
+                        if (event.target === modal) modal.style.display = "none";
+                    });
+                });
         });
-    })
-    document.getElementById("botton-Paciente").addEventListener("click", function () {
-    fetch('/Home/AgregarPacientes')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("modalContainer").innerHTML = html;
-            const modal = document.getElementById("modalPaciente");
-            modal.style.display = "block";
 
-            modal.querySelector(".close").addEventListener("click", () => {
-                modal.style.display = "none";
-            });
-            window.addEventListener("click", event => {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
+        document.getElementById("botton-consultorio").addEventListener("click", function () {
+            fetch('/Home/consultorio')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("modalContainer").innerHTML = html;
+                    const modal = document.getElementById("modalConsultorio");
+                    modal.style.display = "block";
+
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                    window.addEventListener("click", event => {
+                        if (event.target === modal) modal.style.display = "none";
+                    });
+                });
         });
-    })
-    document.getElementById("botton-Especialidad").addEventListener("click", function () {
-    fetch('/Home/AgregarEspecialidad')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("modalContainer").innerHTML = html;
-            const modal = document.getElementById("modalEspecialidad");
-            modal.style.display = "block";
 
-            modal.querySelector(".close").addEventListener("click", () => {
-                modal.style.display = "none";
-            });
-            window.addEventListener("click", event => {
-                if (event.target === modal) {
+        document.getElementById("botton-Paciente").addEventListener("click", function () {
+        fetch('/Home/AgregarPacientes')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("modalContainer").innerHTML = html;
+                const modal = document.getElementById("modalPaciente");
+                modal.style.display = "block";
+
+                modal.querySelector(".close").addEventListener("click", () => {
                     modal.style.display = "none";
-                }
+                });
+                window.addEventListener("click", event => {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
             });
+        })
+
+        document.getElementById("botton-Especialidad").addEventListener("click", function () {
+            fetch('/Home/AgregarEspecialidad')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("modalContainer").innerHTML = html;
+                    const modal = document.getElementById("modalEspecialidad");
+                    modal.style.display = "block";
+
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                    window.addEventListener("click", event => {
+                        if (event.target === modal) modal.style.display = "none";
+                    });
+                });
         });
-    })
-    document.getElementById("botton-AgendarCita").addEventListener("click", function () {
-    fetch('/Home/AgendarCita')  // Llama al controlador que devuelve la vista parcial con el formulario
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("modalContainer").innerHTML = html;
-            const modal = document.getElementById("modalCitas");
-            modal.style.display = "block";
 
-            modal.querySelector(".close").addEventListener("click", () => {
-                modal.style.display = "none";
-            });
-            window.addEventListener("click", event => {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
+        document.getElementById("botton-AgendarCita").addEventListener("click", function () {
+            fetch('/Home/AgendarCita')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("modalContainer").innerHTML = html;
+                    const modal = document.getElementById("modalCitas");
+                    modal.style.display = "block";
+
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                    window.addEventListener("click", event => {
+                        if (event.target === modal) modal.style.display = "none";
+                    });
+                });
         });
-})
-
-
-</script>
+    </script>
 }

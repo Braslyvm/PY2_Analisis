@@ -1,5 +1,5 @@
-<div id="modalCitas" class="modal-Citas">
-    <div class="modal-content-Citas">
+<div id="modalCitas" class="modal-Consultorio">
+    <div class="modal-content-Consultorio">
         <span class="close">&times;</span>
         <h2>Agendar Cita</h2>
         <div class="modal-scroll">
@@ -7,7 +7,7 @@
             {
                 @foreach (var paciente in Model)
                 {
-                    <div class="paciente-card">
+                    <div class="consultorio-card">
                         <h3>Paciente @paciente.Nombre @paciente.Apellido</h3>
                         <form asp-action="AgendarCita" asp-controller="Home" method="post">
                             <input type="hidden" name="idPaciente" value="@paciente.IdPaciente" />

@@ -202,45 +202,45 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
     public IActionResult Asignacion()
-{
-    if (!ListaPaciente.Any() || !ListaConsultorios.Any())
     {
-        TempData["Error"] = "Debe haber pacientes y consultorios cargados para organizar.";
-        return RedirectToAction("Sala");
-    }
-
-   
-    Random random = new Random();
-
-    foreach (var paciente in ListaPaciente)
-    {
-        
-        var citasSinConsultorio = paciente.Citas.Where(c => c.IdConsultorio == null).ToList();
-
-        foreach (var cita in citasSinConsultorio)
+        if (!ListaPaciente.Any() || !ListaConsultorios.Any())
         {
-            int especialidad = cita.IdEspecialidad;
-            var consultoriosDisponibles = ListaConsultorios.Where(c => c.IdEspecialidades.Contains(especialidad) && c.EstadoConsultorio == true).ToList();
+            TempData["Error"] = "Debe haber pacientes y consultorios cargados para organizar.";
+            return RedirectToAction("Sala");
+        }
 
-            if (consultoriosDisponibles.Any())
-            {
-                var consultorioAsignado = consultoriosDisponibles[random.Next(consultoriosDisponibles.Count)];
-
-                // Asignar el consultorio a la cita
-                cita.ReasignarConsultorio(consultorioAsignado.IdConsultorio);
     
-                Console.WriteLine($"Asignado: Paciente {paciente.IdPaciente} -> Consultorio {consultorioAsignado.IdConsultorio}");
-            }
-            else
+        Random random = new Random();
+
+        foreach (var paciente in ListaPaciente)
+        {
+            
+            var citasSinConsultorio = paciente.Citas.Where(c => c.IdConsultorio == null).ToList();
+
+            foreach (var cita in citasSinConsultorio)
             {
-                Console.WriteLine($"No hay consultorios disponibles para la especialidad {especialidad} del paciente {paciente.IdPaciente}.");
+                int especialidad = cita.IdEspecialidad;
+                var consultoriosDisponibles = ListaConsultorios.Where(c => c.IdEspecialidades.Contains(especialidad) && c.EstadoConsultorio == true).ToList();
+
+                if (consultoriosDisponibles.Any())
+                {
+                    var consultorioAsignado = consultoriosDisponibles[random.Next(consultoriosDisponibles.Count)];
+
+                    // Asignar el consultorio a la cita
+                    cita.ReasignarConsultorio(consultorioAsignado.IdConsultorio);
+        
+                    Console.WriteLine($"Asignado: Paciente {paciente.IdPaciente} -> Consultorio {consultorioAsignado.IdConsultorio}");
+                }
+                else
+                {
+                    Console.WriteLine($"No hay consultorios disponibles para la especialidad {especialidad} del paciente {paciente.IdPaciente}.");
+                }
             }
         }
-    }
 
-    TempData["Mensaje"] = "Asignación óptima generada exitosamente.";
-    return RedirectToAction("Sala");
-}
+        TempData["Mensaje"] = "Asignación óptima generada exitosamente.";
+        return RedirectToAction("Sala");
+    }
 
     
 }
