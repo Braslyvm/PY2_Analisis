@@ -13,6 +13,7 @@ namespace AGBACKEND;
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public int Cedula { get; set; }
+        public bool Atencion { get; set; }
         public List<Cita> Citas { get; set; } = new List<Cita>();
         public Paciente(string nombre, string apellido,int cedula) 
         {
@@ -21,6 +22,7 @@ namespace AGBACKEND;
             Nombre = nombre;
             Apellido = apellido;
             Cedula= cedula;
+            Atencion=false;
         }
 
       

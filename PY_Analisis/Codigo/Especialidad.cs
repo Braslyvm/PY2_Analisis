@@ -11,9 +11,9 @@ namespace AGBACKEND;
         public static int lastIdEspecialidad = 0;
         public int IdEspecialidad { get; set; }
         public string Nombre { get; set; }
-        public TimeOnly Duracion { get; set; }
+       public TimeSpan Duracion { get; set; } 
 
-        public Especialidad(string nombre, TimeOnly duracion)
+        public Especialidad(string nombre, TimeSpan duracion)
         {
             lastIdEspecialidad++;
             IdEspecialidad = lastIdEspecialidad;
