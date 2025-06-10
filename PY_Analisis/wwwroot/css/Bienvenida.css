@@ -16,6 +16,19 @@ html, body {
     z-index: -1;
     opacity: 0.5;
 }
+.imagen-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/videos/fondo2.png'); /* Ruta correcta desde wwwroot */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1; /* Asegúrate de que el contenido esté encima */
+    opacity: 0.7; /* Opcional, ajusta según lo necesites */
+}
 .video-background2 {
     position: fixed;
     top: 0;
