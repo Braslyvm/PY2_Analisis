@@ -45,14 +45,16 @@
                         {
                             foreach (var consultorio in listaConsultorios)
                             {
-                                <li>
-                                    Consultorio @consultorio.IdConsultorio
-                                    <form asp-action="AbrirConsultorio" asp-controller="Home" method="post" style="display:inline;">
-                                        <input type="hidden" name="nombre" value="@Model.Nombre" />
-                                        <input type="hidden" name="idConsultorio" value="@consultorio.IdConsultorio" />
-                                        <button type="submit">Asignar</button>
-                                    </form>
-                                </li>
+                                @if ( consultorio.EstadoConsultorio == false ) {
+                                    <li>
+                                        Consultorio @consultorio.IdConsultorio
+                                        <form asp-action="AbrirConsultorio" asp-controller="Home" method="post" style="display:inline;">
+                                            <input type="hidden" name="nombre" value="@Model.Nombre" />
+                                            <input type="hidden" name="idConsultorio" value="@consultorio.IdConsultorio" />
+                                            <button type="submit">Asignar</button>
+                                        </form>
+                                    </li>
+                                }
                             }
                         }
                         else

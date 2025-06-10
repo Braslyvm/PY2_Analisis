@@ -29,16 +29,23 @@ public class Puerta
     public void CambiarEstado(Consultorios Consultorioprueba)
     {
         Estado = true;
+        Consultorioprueba.EstadoConsultorio = true;
         Consultorio = Consultorioprueba;
         ContarDuracion();
     }
 
     public void Cerrar()
+{
+    Estado = false;
+
+    if (Consultorio != null)
     {
-        Estado = false;
+        Consultorio.EstadoConsultorio = false;
         Consultorio = null;
-        Duracion=0;
     }
+
+    Duracion = 0;
+}
    public void ContarDuracion()
     {
         if (Consultorio == null || Consultorio.IdEspecialidades == null)
