@@ -9,10 +9,7 @@
                 <p>Especialidades disponibles:</p>
                 <ul>
                     @{
-                        <form asp-action="CerrarConsultorio" asp-controller="Home" method="post" style="display:inline;">
-                            <input type="hidden" name="nombre" value="@Model.Nombre" />
-                            <button type="submit">cerrado Consultorio</button>
-                        </form>
+                       
                         var idsEspecialidades = Model.Consultorio.IdEspecialidades ?? new List<int>();
                         var listaEspecialidades = ViewBag.ListaEspecialidad as List<AGBACKEND.Especialidad>;
                         var especialidadesConsultorio = listaEspecialidades
@@ -30,6 +27,10 @@
                                 <li>@esp.Nombre (@esp.Duracion)</li>
                             }
                         }
+                        <form asp-action="CerrarConsultorio" asp-controller="Home" method="post" class="cerrar-consultorio">
+                            <input type="hidden" name="nombre" value="@Model.Nombre" />
+                            <button type="submit">Cerrar Consultorio</button>
+                        </form>
                     }
                 </ul>
             }
