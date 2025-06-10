@@ -14,7 +14,15 @@ public class HomeController : Controller
     public static List<Especialidad> ListaEspecialidad { get; set; } = new List<Especialidad>();
     public static List<Consultorios> ListaConsultorios { get; set; } = new List<Consultorios>();
     public static List<Cita> Citas { get; set; } = new List<Cita>();
-    public Dictionary<int, int> Asignaciones { get; set; } = new();// paciente id y el consultorio ay
+
+    public static Filas fila1 { get; set; } = new Filas();
+    public static Filas fila2 { get; set; } = new Filas();
+    public static Filas fila3 { get; set; } = new Filas();
+    public static Filas fila4 { get; set; } = new Filas();
+    public static Filas fila5 { get; set; } = new Filas();
+
+
+    public Dictionary<int, int> Asignaciones { get; set; } = new();
 
     private static bool datosCargados = false;
     public IActionResult Index()
@@ -28,18 +36,25 @@ public class HomeController : Controller
         {
             await CargarPaciente();
             await CargarEspecialidad();
+
+            fila1.CambiarEstado();
+            fila3.CambiarEstado();
             datosCargados = true;
         }
+            ViewBag.Fila1 = fila1;
+            ViewBag.Fila2 = fila2;
+            ViewBag.Fila3 = fila3;
+            ViewBag.Fila4 = fila4;
+            ViewBag.Fila5 = fila5;
+
         return View(ListaPaciente);
     }
 
     [HttpPost]
     public IActionResult AgregarEspecialidad(string nombre, string duracion)
     {
-        if (ListaPaciente.Any(p => p.Nombre == nombre))
-        {
+        if (ListaPaciente.Any(p => p.Nombre == nombre)) {
             ModelState.AddModelError("Especialidad", "No es posible registrar duplicados de especialidad.");
-            //return PartialView("AgregarPacientes"); redireccionar a donde corresponda
         }
         if (TimeSpan.TryParse(duracion, out TimeSpan duracionTimeSpan)) 
         {
@@ -53,7 +68,7 @@ public class HomeController : Controller
             {
                 Console.WriteLine($"ID: {especialidad.IdEspecialidad}, Nombre: {especialidad.Nombre}, Duración: {especialidad.Duracion}");
             }
-            return RedirectToAction("AgregarEspecialidad");
+
         }
         ModelState.AddModelError("", "Formato de duración no válido.");
         return RedirectToAction("Sala");
@@ -62,6 +77,7 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult AgregarPacientes(string nombre, string apellido, int cedula)
     {
+        if (ListaPaciente.Any(p => p.Cedula == cedula))
         if (ListaPaciente.Any(p => p.Cedula == cedula))
         {
             ModelState.AddModelError("Cedula", "La cédula ya está registrada.");

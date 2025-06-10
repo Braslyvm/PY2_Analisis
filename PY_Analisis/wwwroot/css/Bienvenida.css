@@ -22,12 +22,11 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/videos/fondo2.png'); /* Ruta correcta desde wwwroot */
+    background-image: url('/videos/fondo2.png'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: -1; /* Asegúrate de que el contenido esté encima */
-    opacity: 0.7; /* Opcional, ajusta según lo necesites */
+    z-index: -1; 
 }
 .video-background2 {
     position: fixed;
@@ -39,7 +38,6 @@ html, body {
     z-index: -1;
     opacity: 0.1;
 }
-
 
 .contenido {
     position: relative;
@@ -138,3 +136,31 @@ html, body {
 }
 
 
+.Contenedor-Consultorios {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 12%;
+  padding: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: transparent; 
+  border: none;
+  justify-content: center;
+  align-items: center;
+  overflow:hidden;
+}
+
+  .Contenedor-Consultorios img {
+    flex: 0 0 auto;           
+    width: 5%;             
+    height: auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  .Contenedor-Consultorios img:hover {
+    transform: scale(1.1);
+    border-color: #007bff;
+
+  }

@@ -33,11 +33,55 @@
   </div>
 </nav>
 
+<div class="Contenedor-Consultorios">
+    @if (ViewBag.Fila1.Estado == true)
+    {
+        <img src="/Imagenes/Abierto.jpg" alt="Imagen 1" />
+    }
+    else
+    {
+        <img src="/Imagenes/cerrado.jpg" alt="Imagen 1" />
+    }
+  
+    @if (ViewBag.Fila2.Estado == true)
+    {
+        <img src="/Imagenes/Abierto.jpg" alt="Imagen 2" />
+    }
+    else
+    {
+        <img src="/Imagenes/cerrado.jpg" alt="Imagen 2" />
+    }
+    @if (ViewBag.Fila3.Estado == true)
+    {
+        <img src="/Imagenes/Abierto.jpg" alt="Imagen 3" />
+    }
+    else
+    {
+        <img src="/Imagenes/cerrado.jpg" alt="Imagen 3" />
+    }
+  
+    @if (ViewBag.Fila4.Estado == true)
+    {
+        <img src="/Imagenes/Abierto.jpg" alt="Imagen 3" />
+    }
+    else
+    {
+        <img src="/Imagenes/cerrado.jpg" alt="Imagen 4" />
+    }
+    @if (ViewBag.Fila5.Estado == true)
+    {
+        <img src="/Imagenes/Abierto.jpg" alt="Imagen 5" />
+    }
+    else
+    {
+        <img src="/Imagenes/cerrado.jpg" alt="Imagen 5" />
+    }
+</div>
+
 
 
 <div id="modalContainer"></div>
 
-</div>
 
 
 @section Scripts {
