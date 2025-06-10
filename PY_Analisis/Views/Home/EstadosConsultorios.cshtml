@@ -1,0 +1,67 @@
+<div id="modalEstadosConsultorios" class="modal-Consultorio">
+    <div class="modal-content-Consultorio">
+        <span class="close">&times;</span>
+        <h2>@Model.Nombre</h2>
+        <div class="modal-scroll">
+            @if (Model.Estado != false)
+            {
+                <p>Consultorio @Model.Consultorio.IdConsultorio</p>
+                <p>Especialidades disponibles:</p>
+                <ul>
+                    @{
+                        <form asp-action="CerrarConsultorio" asp-controller="Home" method="post" style="display:inline;">
+                            <input type="hidden" name="nombre" value="@Model.Nombre" />
+                            <button type="submit">cerrado Consultorio</button>
+                        </form>
+                        var idsEspecialidades = Model.Consultorio.IdEspecialidades ?? new List<int>();
+                        var listaEspecialidades = ViewBag.ListaEspecialidad as List<AGBACKEND.Especialidad>;
+                        var especialidadesConsultorio = listaEspecialidades
+                            .Where(e => idsEspecialidades.Contains(e.IdEspecialidad))
+                            .ToList();
+
+                        if (especialidadesConsultorio.Count == 0)
+                        {
+                            <li>No hay especialidades registradas.</li>
+                        }
+                        else
+                        {
+                            foreach (var esp in especialidadesConsultorio)
+                            {
+                                <li>@esp.Nombre (@esp.Duracion)</li>
+                            }
+                        }
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Está cerrado</p>
+                <p>Asignar a un consultorio:</p>
+
+                <ul>
+                    @{
+                        var listaConsultorios = ViewBag.ListaConsultorios as List<AGBACKEND.Consultorios>;
+                        if (listaConsultorios != null && listaConsultorios.Count > 0)
+                        {
+                            foreach (var consultorio in listaConsultorios)
+                            {
+                                <li>
+                                    Consultorio @consultorio.IdConsultorio
+                                    <form asp-action="AbrirConsultorio" asp-controller="Home" method="post" style="display:inline;">
+                                        <input type="hidden" name="nombre" value="@Model.Nombre" />
+                                        <input type="hidden" name="idConsultorio" value="@consultorio.IdConsultorio" />
+                                        <button type="submit">Asignar</button>
+                                    </form>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No hay consultorios disponibles.</li>
+                        }
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</div>

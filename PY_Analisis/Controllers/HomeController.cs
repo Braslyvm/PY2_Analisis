@@ -57,8 +57,12 @@ public class HomeController : Controller
             await CargarPaciente();
             await CargarEspecialidad();
 
-            Puerta1.CambiarEstado();
-            Puerta3.CambiarEstado();
+            var Consultorio = new Consultorios();
+            Consultorio.RegistrarEspecialidad(1);
+            Consultorio.RegistrarEspecialidad(2);
+            ListaConsultorios.Add(Consultorio);
+            Puerta1.CambiarEstado(Consultorio);
+            datosCargados = true;
             datosCargados = true;
         }
             ViewBag.Puerta1  = Puerta1 ;
@@ -68,6 +72,86 @@ public class HomeController : Controller
             ViewBag.Puerta5  = Puerta5 ;
 
         return View(ListaPaciente);
+    }
+    public IActionResult MostrarFila(string ver)
+    {
+        ViewBag.ListaEspecialidad = ListaEspecialidad;
+        ViewBag.ListaConsultorios = ListaConsultorios;
+        if (ver == "1")
+        {
+            return PartialView("EstadosConsultorios", Puerta1);
+        }
+        if (ver == "2"){
+            return PartialView("EstadosConsultorios", Puerta2);
+        }
+        if (ver == "3"){
+            return PartialView("EstadosConsultorios", Puerta3);
+        }
+        if (ver == "4"){
+            return PartialView("EstadosConsultorios", Puerta4);
+        }
+        else{
+            return PartialView("EstadosConsultorios", Puerta5);
+        }
+    }
+
+    public IActionResult CerrarConsultorio(string nombre){
+        if (nombre == Puerta1.Nombre)
+        {
+            Puerta1.Cerrar();
+        }
+
+        if (nombre == Puerta2.Nombre)
+        {
+            Puerta2.Cerrar();
+        }
+        if (nombre == Puerta3.Nombre)
+        {
+            Puerta3.Cerrar();
+        }
+        if (nombre == Puerta4.Nombre)
+        {
+            Puerta4.Cerrar();
+        }
+        if (nombre == Puerta5.Nombre)
+        {
+            Puerta5.Cerrar();
+        }
+        return RedirectToAction("Sala");
+    }
+
+
+    [HttpPost]
+    public IActionResult AbrirConsultorio(string nombre, int idConsultorio)
+    {
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
+        if (nombre == Puerta1.Nombre)
+        {
+            Puerta1.Cerrar();
+            Puerta1.CambiarEstado(consultorio);
+        }
+
+        if (nombre == Puerta2.Nombre)
+        {
+            Puerta2.Cerrar();
+            Puerta2.CambiarEstado(consultorio);
+        }
+        if (nombre == Puerta3.Nombre)
+        {
+            Puerta3.Cerrar();
+            Puerta3.CambiarEstado(consultorio);
+        }
+        if (nombre == Puerta4.Nombre)
+        {
+            Puerta4.Cerrar();
+            Puerta4.CambiarEstado(consultorio);
+        }
+        if (nombre == Puerta5.Nombre)
+        {
+            Puerta5.Cerrar();
+            Puerta5.CambiarEstado(consultorio);
+        }
+        return RedirectToAction("Sala");
     }
 
    [HttpPost]
@@ -89,6 +173,8 @@ public class HomeController : Controller
             }
             return RedirectToAction("Sala");
         }
+    
+
         
       
     

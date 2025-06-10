@@ -23,13 +23,13 @@ public class Puerta
         Nombre = nombre;
         TiempoFuncional = new Stopwatch();
         TiempoFuncional.Start();
-
         
     }
 
-    public void CambiarEstado()
+    public void CambiarEstado(Consultorios Consultorioprueba)
     {
         Estado = true;
+        Consultorio = Consultorioprueba;
         ContarDuracion();
     }
 
