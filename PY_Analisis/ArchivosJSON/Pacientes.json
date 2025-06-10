@@ -13,5 +13,50 @@
     "Nombre": "prueba3",
     "Apellido": "López",
     "Cedula": 789012
+  },
+  {
+    "Nombre": "Ana",
+    "Apellido": "Ramírez",
+    "Cedula": 112233
+  },
+  {
+    "Nombre": "Carlos",
+    "Apellido": "Fernández",
+    "Cedula": 445566
+  },
+  {
+    "Nombre": "María",
+    "Apellido": "Santos",
+    "Cedula": 778899
+  },
+  {
+    "Nombre": "Jorge",
+    "Apellido": "Mendoza",
+    "Cedula": 334455
+  },
+  {
+    "Nombre": "Lucía",
+    "Apellido": "Vargas",
+    "Cedula": 667788
+  },
+  {
+    "Nombre": "Diego",
+    "Apellido": "Pérez",
+    "Cedula": 990011
+  },
+  {
+    "Nombre": "Sofía",
+    "Apellido": "García",
+    "Cedula": 223344
+  },
+  {
+    "Nombre": "Miguel",
+    "Apellido": "Ortiz",
+    "Cedula": 556677
+  },
+  {
+    "Nombre": "Elena",
+    "Apellido": "Navarro",
+    "Cedula": 889900
   }
 ]

@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
+﻿using PY_Analisis.Models;
+using AGBACKEND;
 
-namespace AGBACKEND;
+public class Cita
+{
+    
+    private static int lastIdCita = 0;
 
-    public class Cita
+    public int IdCita { get; set; }
+    public int IdPaciente { get; set; }
+    public Especialidad Especialidad { get; set; }
+    public bool asignada{ get; set; }
+
+    public Cita(Especialidad especialidad, int idPaciente)
     {
-        private static int lastIdCita = 0;
-
-        public int IdCita { get; set; }
-        public int? IdConsultorio { get; set; }
-        public int IdEspecialidad { get; set; }
-        public int IdPaciente { get; set; }
-        public Stopwatch TiempoEspera { get; set; }
-
-        public Cita( int idEspecialidad, int idPaciente)
-        {
-            lastIdCita++;
-            IdCita = lastIdCita;
-            IdConsultorio = null;
-            IdEspecialidad = idEspecialidad;
-            IdPaciente = idPaciente;
-            TiempoEspera = new Stopwatch();
-        }
-         public void ReasignarConsultorio(int nuevoIdConsultorio)
-        {
-            IdConsultorio = nuevoIdConsultorio;
-            Console.WriteLine($"La cita {IdCita} ha sido reasignada al consultorio {nuevoIdConsultorio}.");
-        }
+        lastIdCita++;
+        IdCita = lastIdCita;
+        Especialidad = especialidad;
+        IdPaciente = idPaciente;
+        asignada=false;
+      
     }
+
+    public int ConsultarDuracion()
+    {
+        return Especialidad.Duracion;
+    }
+}

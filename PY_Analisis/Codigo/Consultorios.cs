@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PY_Analisis.Models;
 
 namespace AGBACKEND;
 
@@ -22,7 +23,7 @@ namespace AGBACKEND;
             lastID++;
             ConsultoriosOpen++;
             IdConsultorio = lastID;
-            EstadoConsultorio = true;
+            EstadoConsultorio = false;
             IdEspecialidades = new List<int>();
         }
 

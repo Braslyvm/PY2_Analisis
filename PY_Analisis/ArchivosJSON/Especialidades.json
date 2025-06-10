@@ -1,14 +1,54 @@
 [
   {
     "Nombre": "Neurologia",
-    "Duracion": "00:00:45"
+    "Duracion": 45
   },
   {
     "Nombre": "prueba2",
-    "Duracion": "00:00:45"
+    "Duracion": 45
   },
   {
     "Nombre": "prueba3",
-    "Duracion": "00:00:45"
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Cardiología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Dermatología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Pediatría",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Ginecología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Psiquiatría",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Oftalmología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Urología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Traumatología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Endocrinología",
+    "Duracion": 45
+  },
+  {
+    "Nombre": "Reumatología",
+    "Duracion": 45
   }
 ]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PY_Analisis.Models;
 
 namespace AGBACKEND;
 
@@ -11,9 +12,9 @@ namespace AGBACKEND;
         public static int lastIdEspecialidad = 0;
         public int IdEspecialidad { get; set; }
         public string Nombre { get; set; }
-       public TimeSpan Duracion { get; set; } 
+       public int Duracion { get; set; } 
 
-        public Especialidad(string nombre, TimeSpan duracion)
+        public Especialidad(string nombre, int duracion)
         {
             lastIdEspecialidad++;
             IdEspecialidad = lastIdEspecialidad;
