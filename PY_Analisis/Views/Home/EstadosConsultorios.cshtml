@@ -1,70 +1,63 @@
 <div id="modalEstadosConsultorios" class="modal-Consultorio">
     <div class="modal-content-Consultorio">
         <span class="close">&times;</span>
-        <h2>@Model.Nombre</h2>
+        <h2>Consultorio @Model.IdConsultorio</h2>
         <div class="modal-scroll">
-            @if (Model.Estado != false)
+            @if (Model.EstadoConsultorio != false)
             {
-                <p>Consultorio @Model.Consultorio.IdConsultorio</p>
-                <p>Especialidades disponibles:</p>
-                <ul>
-                    @{
-                       
-                        var idsEspecialidades = Model.Consultorio.IdEspecialidades ?? new List<int>();
-                        var listaEspecialidades = ViewBag.ListaEspecialidad as List<AGBACKEND.Especialidad>;
-                        var especialidadesConsultorio = listaEspecialidades
-                            .Where(e => idsEspecialidades.Contains(e.IdEspecialidad))
-                            .ToList();
+                <form asp-action="CerrarConsultorio" asp-controller="Home" method="post" class="cerrar-consultorio">
+                            <input type="hidden" name="IdConsultorio" value="@Model.IdConsultorio" />
+                            <button type="submit">Cerrar Consultorio</button>
+                </form>
+            }
+            else {
+                <form asp-action="AbrirConsultorio" asp-controller="Home" method="post" class="Abrir-consultorio">
+                            <input type="hidden" name="IdConsultorio" value="@Model.IdConsultorio" />
+                            <button type="submit">Abrir Consultorio</button>
+                </form>
 
-                        if (especialidadesConsultorio.Count == 0)
+            }
+            <h3>Consultorio @Model.IdConsultorio - @(Model.EstadoConsultorio ? "Abierto" : "Cerrado")</h3>
+                    <ul>
+                        @foreach (var idEsp in Model.IdEspecialidades)
                         {
-                            <li>No hay especialidades registradas.</li>
-                        }
-                        else
-                        {
-                            foreach (var esp in especialidadesConsultorio)
+                            var especialidad = PY_Analisis.Controllers.HomeController.ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == idEsp);
+                            if (especialidad != null)
                             {
-                                <li>@esp.Nombre (@esp.Duracion)</li>
+                                <li>
+                                    @especialidad.Nombre
+                                    <form asp-action="EliminarEspecialidadDeConsultorio" asp-controller="Home" method="post" style="display:inline;">
+                                        <input type="hidden" name="idConsultorio" value="@Model.IdConsultorio" />
+                                        <input type="hidden" name="idEspecialidad" value="@idEsp" />
+                                        <button type="submit">Eliminar</button>
+                                    </form>
+                                </li>
                             }
                         }
-                        <form asp-action="CerrarConsultorio" asp-controller="Home" method="post" class="cerrar-consultorio">
-                            <input type="hidden" name="nombre" value="@Model.Nombre" />
-                            <button type="submit">Cerrar Consultorio</button>
+                    </ul>
+
+                    @if (Model.IdEspecialidades.Count < 5)
+                    {
+                        <form asp-action="AgregarEspecialidadAConsultorio" asp-controller="Home" method="post">
+                            <input type="hidden" name="idConsultorio" value="@Model.IdConsultorio" />
+                            <select name="idEspecialidad">
+                                @foreach (var especialidad in PY_Analisis.Controllers.HomeController.ListaEspecialidad)
+                                {
+                                    if (!Model.IdEspecialidades.Contains(especialidad.IdEspecialidad))
+                                    {
+                                        <option value="@especialidad.IdEspecialidad">@especialidad.Nombre</option>
+                                    }
+                                }
+                            </select>
+                            <button type="submit">Agregar Especialidad</button>
                         </form>
                     }
-                </ul>
-            }
-            else
-            {
-                <p>Está cerrado</p>
-                <p>Asignar a un consultorio:</p>
-
-                <ul>
-                    @{
-                        var listaConsultorios = ViewBag.ListaConsultorios as List<AGBACKEND.Consultorios>;
-                        if (listaConsultorios != null && listaConsultorios.Count > 0)
-                        {
-                            foreach (var consultorio in listaConsultorios)
-                            {
-                                @if ( consultorio.EstadoConsultorio == false ) {
-                                    <li>
-                                        Consultorio @consultorio.IdConsultorio
-                                        <form asp-action="AbrirConsultorio" asp-controller="Home" method="post" style="display:inline;">
-                                            <input type="hidden" name="nombre" value="@Model.Nombre" />
-                                            <input type="hidden" name="idConsultorio" value="@consultorio.IdConsultorio" />
-                                            <button type="submit">Asignar</button>
-                                        </form>
-                                    </li>
-                                }
-                            }
-                        }
-                        else
-                        {
-                            <li>No hay consultorios disponibles.</li>
-                        }
+                    else
+                    {
+                        <p>Máximo de especialidades alcanzado.</p>
                     }
-                </ul>
-            }
+
+           
         </div>
     </div>
 </div>

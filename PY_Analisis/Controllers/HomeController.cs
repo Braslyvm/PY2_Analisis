@@ -65,94 +65,42 @@ public class HomeController : Controller
             datosCargados = true;
             datosCargados = true;
         }
-            ViewBag.Puerta1  = Puerta1 ;
-            ViewBag.Puerta2  = Puerta2 ;
-            ViewBag.Puerta3  = Puerta3 ;
-            ViewBag.Puerta4  = Puerta4 ;
-            ViewBag.Puerta5  = Puerta5 ;
+
+
+        ViewBag.Consultorios = ListaConsultorios;
+
 
         return View(ListaPaciente);
     }
-    public IActionResult MostrarFila(string ver)
-    {
-        ViewBag.ListaEspecialidad = ListaEspecialidad;
-        ViewBag.ListaConsultorios = ListaConsultorios;
-        if (ver == "1")
-        {
-            return PartialView("EstadosConsultorios", Puerta1);
-        }
-        if (ver == "2"){
-            return PartialView("EstadosConsultorios", Puerta2);
-        }
-        if (ver == "3"){
-            return PartialView("EstadosConsultorios", Puerta3);
-        }
-        if (ver == "4"){
-            return PartialView("EstadosConsultorios", Puerta4);
-        }
-        else{
-            return PartialView("EstadosConsultorios", Puerta5);
-        }
+
+
+  public IActionResult MostrarConsultorio(int id){
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == id);
+
+        return PartialView("EstadosConsultorios", consultorio);
     }
-
-    public IActionResult CerrarConsultorio(string nombre){
-        if (nombre == Puerta1.Nombre)
-        {
-            Puerta1.Cerrar();
-        }
-
-        if (nombre == Puerta2.Nombre)
-        {
-            Puerta2.Cerrar();
-        }
-        if (nombre == Puerta3.Nombre)
-        {
-            Puerta3.Cerrar();
-        }
-        if (nombre == Puerta4.Nombre)
-        {
-            Puerta4.Cerrar();
-        }
-        if (nombre == Puerta5.Nombre)
-        {
-            Puerta5.Cerrar();
-        }
-        return RedirectToAction("Sala");
-    }
-
-
+    
     [HttpPost]
-    public IActionResult AbrirConsultorio(string nombre, int idConsultorio)
+    public IActionResult CerrarConsultorio(int IdConsultorio)
     {
-        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
-        if (nombre == Puerta1.Nombre)
-        {
-            Puerta1.Cerrar();
-            Puerta1.CambiarEstado(consultorio);
-        }
 
-        if (nombre == Puerta2.Nombre)
-        {
-            Puerta2.Cerrar();
-            Puerta2.CambiarEstado(consultorio);
-        }
-        if (nombre == Puerta3.Nombre)
-        {
-            Puerta3.Cerrar();
-            Puerta3.CambiarEstado(consultorio);
-        }
-        if (nombre == Puerta4.Nombre)
-        {
-            Puerta4.Cerrar();
-            Puerta4.CambiarEstado(consultorio);
-        }
-        if (nombre == Puerta5.Nombre)
-        {
-            Puerta5.Cerrar();
-            Puerta5.CambiarEstado(consultorio);
-        }
+
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == IdConsultorio);
+
+        consultorio.EstadoConsultorio = false;
         return RedirectToAction("Sala");
     }
+    
+    [HttpPost]
+     public IActionResult AbrirConsultorio(int IdConsultorio)
+    {
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == IdConsultorio);
+
+        consultorio.EstadoConsultorio = true;
+        return RedirectToAction("Sala");
+    }
+     [HttpPost]
+
 
    [HttpPost]
     public IActionResult AgregarEspecialidad(string nombre, int duracion)
@@ -162,15 +110,8 @@ public class HomeController : Controller
         } 
 
             var nuevaEspecialidad = new Especialidad(nombre, duracion);
-
             ListaEspecialidad.Add(nuevaEspecialidad);
-            Console.WriteLine("Nueva especialidad agregada:");
 
-
-            foreach (var especialidad in ListaEspecialidad)
-            {
-                Console.WriteLine($"ID: {especialidad.IdEspecialidad}, Nombre: {especialidad.Nombre}, Duración: {especialidad.Duracion}");
-            }
             return RedirectToAction("Sala");
         }
     
@@ -190,11 +131,6 @@ public class HomeController : Controller
         }
         var nuevoPaciente = new Paciente(nombre, apellido, cedula);
         ListaPaciente.Add(nuevoPaciente);
-        Console.WriteLine("Nueva PACIENTE agregada:");
-        foreach (var paciente in ListaPaciente)
-        {
-            Console.WriteLine($"ID: {paciente.IdPaciente}, Nombre: {paciente.Nombre}, Apellido: {paciente.Apellido},cedula: {paciente.Cedula}");
-        }
         return RedirectToAction("Sala");
     }
    
@@ -217,10 +153,6 @@ public class HomeController : Controller
         string ruta = Path.Combine(Directory.GetCurrentDirectory(), "ArchivosJSON", "Pacientes.json");
         using FileStream leer = System.IO.File.OpenRead(ruta);
         ListaPaciente = await JsonSerializer.DeserializeAsync<List<Paciente>>(leer);
-        foreach (var paciente in ListaPaciente)
-        {
-            Console.WriteLine($"ID: {paciente.IdPaciente}, Nombre: {paciente.Nombre}, Apellido: {paciente.Apellido}");
-        }
     }
     public async Task CargarEspecialidad()
     {
@@ -228,10 +160,7 @@ public class HomeController : Controller
         string ruta = Path.Combine(Directory.GetCurrentDirectory(), "ArchivosJSON", "Especialidades.json");
         using FileStream leer = System.IO.File.OpenRead(ruta);
         ListaEspecialidad = await JsonSerializer.DeserializeAsync<List<Especialidad>>(leer);
-        foreach (var especialidad in ListaEspecialidad)
-        {
-            Console.WriteLine($"ID: {especialidad.IdEspecialidad}, Nombre: {especialidad.Nombre}, Duración: {especialidad.Duracion}");
-        }
+ 
     }
 
     public IActionResult CrearConsultorio()
@@ -336,7 +265,7 @@ public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
     var citasPendientes = Citas.Where(c => !c.asignada).ToList();
 
     foreach (var cita in citasPendientes)
-    {       Console.WriteLine($"🕵️ Revisando cita ID: {cita.IdCita}, Especialidad: {cita.Especialidad.Nombre}, Paciente ID: {cita.IdPaciente}");
+    {       Console.WriteLine($" Revisando cita ID: {cita.IdCita}, Especialidad: {cita.Especialidad.Nombre}, Paciente ID: {cita.IdPaciente}");
 
         //si alguien en cola
         Cita citaYaEnCola = ColaCitas.FirstOrDefault(c => c.Especialidad.IdEspecialidad == cita.Especialidad.IdEspecialidad);
@@ -348,7 +277,7 @@ public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
             if (asignada)
             {
                 cita.asignada = true;
-                Console.WriteLine($"✅ Cita {cita.IdCita} asignada directamente a una puerta.");
+                Console.WriteLine($"Cita {cita.IdCita} asignada directamente a una puerta.");
           
             }
             else
@@ -356,7 +285,7 @@ public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
                 if (!ColaCitas.Contains(cita))
                 {
                     ColaCitas.Add(cita);
-                     Console.WriteLine($"🔄 Cita {cita.IdCita} no fue asignada, agregada a la cola.");
+                     Console.WriteLine($" Cita {cita.IdCita} no fue asignada, agregada a la cola.");
                
                 }
             }
@@ -368,18 +297,18 @@ public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
                 {
                     citaYaEnCola.asignada = true;
                     ColaCitas.Remove(citaYaEnCola);
-                 Console.WriteLine($"🚪 Cita {citaYaEnCola.IdCita} fue tomada desde la cola y asignada a una puerta.");
+                 Console.WriteLine($" Cita {citaYaEnCola.IdCita} fue tomada desde la cola y asignada a una puerta.");
            
                 }
                 if (!ColaCitas.Contains(cita))
                 {
                     ColaCitas.Add(cita); 
-                    Console.WriteLine($"📥 Cita {cita.IdCita} agregada a la cola.");
+                    Console.WriteLine($"Cita {cita.IdCita} agregada a la cola.");
           
                 }
         }
     }
-     Console.WriteLine("✔️ Proceso de asignación finalizado.");
+     Console.WriteLine("Proceso de asignación finalizado.");
     
     return Ok("Proceso de asignación completado.");
 }

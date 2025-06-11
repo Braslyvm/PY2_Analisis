@@ -32,56 +32,17 @@
     </div>
   </div>
 </nav>
-
-
-
 <div class="Contenedor-Consultorios">
-    @if (ViewBag.Puerta1.Estado == true)
-    {
-        <img src="/Imagenes/Abierto.jpg" alt="Imagen 1" id="Puerta-1" />
+    @foreach (var consultorio in ViewBag.Consultorios) {
+    if (consultorio.EstadoConsultorio == true) {
+        <img src="/Imagenes/Abierto.jpg" alt="Imagen 1" data-id="@consultorio.IdConsultorio" />
+    } else {
+        <img src="/Imagenes/cerrado.jpg" alt="Imagen 1" data-id="@consultorio.IdConsultorio" />
     }
-    else
-    {
-        <img src="/Imagenes/cerrado.jpg" alt="Imagen 1" id="Puerta-1" />
-    }
-  
-    @if (ViewBag.Puerta2.Estado == true)
-    {
-        <img src="/Imagenes/Abierto.jpg" alt="Imagen 2" id="Puerta-2"/>
-    }
-    else
-    {
-        <img src="/Imagenes/cerrado.jpg" alt="Imagen 2" id="Puerta-2"/>
-    }
-    @if (ViewBag.Puerta3.Estado == true)
-    {
-        <img src="/Imagenes/Abierto.jpg" alt="Imagen 3" id="Puerta-3"/>
-    }
-    else
-    {
-        <img src="/Imagenes/cerrado.jpg" alt="Imagen 3" id="Puerta-3"/>
-    }
-  
-    @if (ViewBag.Puerta4.Estado == true)
-    {
-        <img src="/Imagenes/Abierto.jpg" alt="Imagen 3" id="Puerta-4"/>
-    }
-    else
-    {
-        <img src="/Imagenes/cerrado.jpg" alt="Imagen 4" id="Puerta-4"/>
-    }
-    @if (ViewBag.Puerta5.Estado == true)
-    {
-        <img src="/Imagenes/Abierto.jpg" alt="Imagen 5" id="Puerta-5"/>
-    }
-    else
-    {
-        <img src="/Imagenes/cerrado.jpg" alt="Imagen 5"id="Puerta-5" />
-    }
+}
+
+
 </div>
-
-
-
 
 <div id="modalContainer"></div>
 
@@ -186,85 +147,26 @@
         });
 
 
+        document.querySelectorAll('img[data-id]').forEach(img => {
+            img.addEventListener('click', function () {
+                const id = this.dataset.id;
 
+                fetch(`/Home/MostrarConsultorio?id=${id}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById("modalContainer").innerHTML = html;
 
+                        const modal = document.getElementById("modalEstadosConsultorios");
+                        modal.style.display = "block";
 
+                        modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
 
-
-
-        document.getElementById("Puerta-1").addEventListener("click", function () {
-            fetch('/Home/MostrarFila?ver=1')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById("modalContainer").innerHTML = html;
-                    const modal = document.getElementById("modalEstadosConsultorios");
-                    modal.style.display = "block";
-
-                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
-                    window.addEventListener("click", event => {
-                        if (event.target === modal) modal.style.display = "none";
+                        window.addEventListener("click", event => {
+                            if (event.target === modal) modal.style.display = "none";
+                        });
                     });
-                });
+            });
         });
 
-        document.getElementById("Puerta-2").addEventListener("click", function () {
-            fetch('/Home/MostrarFila?ver=2')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById("modalContainer").innerHTML = html;
-                    const modal = document.getElementById("modalEstadosConsultorios");
-                    modal.style.display = "block";
-
-                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
-                    window.addEventListener("click", event => {
-                        if (event.target === modal) modal.style.display = "none";
-                    });
-                });
-        });
-
-        document.getElementById("Puerta-3").addEventListener("click", function () {
-            fetch('/Home/MostrarFila?ver=3')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById("modalContainer").innerHTML = html;
-                    const modal = document.getElementById("modalEstadosConsultorios");
-                    modal.style.display = "block";
-
-                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
-                    window.addEventListener("click", event => {
-                        if (event.target === modal) modal.style.display = "none";
-                    });
-                });
-        });
-
-        document.getElementById("Puerta-4").addEventListener("click", function () {
-            fetch('/Home/MostrarFila?ver=4')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById("modalContainer").innerHTML = html;
-                    const modal = document.getElementById("modalEstadosConsultorios");
-                    modal.style.display = "block";
-
-                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
-                    window.addEventListener("click", event => {
-                        if (event.target === modal) modal.style.display = "none";
-                    });
-                });
-        });
-
-        document.getElementById("Puerta-5").addEventListener("click", function () {
-            fetch('/Home/MostrarFila?ver=5')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById("modalContainer").innerHTML = html;
-                    const modal = document.getElementById("modalEstadosConsultorios");
-                    modal.style.display = "block";
-
-                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
-                    window.addEventListener("click", event => {
-                        if (event.target === modal) modal.style.display = "none";
-                    });
-                });
-        });
     </script>
 }

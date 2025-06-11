@@ -89,6 +89,7 @@ html, body {
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     box-sizing: border-box; 
+    position: relative;
 }
 
 .modal-content-Consultorio h2 {
@@ -197,42 +198,42 @@ html, body {
 
 .Contenedor-Consultorios {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 12%;
+  flex-wrap: wrap; 
+  justify-content: center;
+  align-items: center;
   padding: 10px;
   max-width: 100%;
   box-sizing: border-box;
-  background-color: transparent; 
+  background-color: transparent;
   border: none;
-  justify-content: center;
-  align-items: center;
-  overflow:hidden;
+  gap: 10px; 
+  overflow: hidden; 
 }
 
-  .Contenedor-Consultorios img {
-    flex: 0 0 auto;           
-    width: 5%;             
-    height: auto;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  .Contenedor-Consultorios img:hover {
-    transform: scale(1.1);
-    border-color: #007bff;
+.Contenedor-Consultorios img {
+  width: calc(100% / 15 - 10px); 
+  max-width: 5%; 
+  height: auto;
+  flex: 1 1 auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
 
-  }
+.Contenedor-Consultorios img:hover {
+  transform: scale(1.1);
+  border-color: #007bff;
+}
 .cerrar-consultorio {
-    
     position: absolute;
     right: 2.3rem;
     z-index: 10;
+    transform: translateY(-5px);
+    
 }
 
 .cerrar-consultorio button {
-    background-color: #e74c3c;
-    color: white;
+    background-color: #e74c3c !important;
+    color: white !important;
     border: none;
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
@@ -243,4 +244,28 @@ html, body {
 }
 .cerrar-consultorio button:hover {
     background-color: #c0392b;
+}
+
+
+.Abrir-consultorio {
+    position: absolute;
+    right: 2.3rem;
+    z-index: 10;
+    transform: translateY(-5px);
+    
+}
+
+.Abrir-consultorio button {
+    background-color: #00e70c !important;
+    color: white !important;
+    border: none;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+}
+.Abrir-consultorio button:hover {
+    background-color: #2bc04b;
 }
