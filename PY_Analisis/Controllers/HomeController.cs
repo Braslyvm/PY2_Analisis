@@ -143,11 +143,7 @@ public class HomeController : Controller
 
             return RedirectToAction("Sala");
         }
-    
 
-        
-      
-    
 
     [HttpPost]
     public IActionResult AgregarPacientes(string nombre, string apellido, int cedula)
@@ -210,20 +206,42 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
 
-    public IActionResult EliminarEspecialidadDeConsultorio(int idConsultorio, int idEspecialidad){
-        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
-        if (consultorio == null){
-            TempData["Error"] = "Consultorio no encontrado.";
-            return RedirectToAction("Sala");
-        }
-        if (consultorio.EliminarEspecialidad(idEspecialidad)){
-            TempData["Mensaje"] = "Especialidad eliminada exitosamente.";
-        }
-        else{
-            TempData["Error"] = "La especialidad no estaba registrada en este consultorio.";
-        }
+   public IActionResult EliminarEspecialidadDeConsultorio(int idConsultorio, int idEspecialidad)
+{
+    var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
+    if (consultorio == null)
+    {
+        TempData["Error"] = "Consultorio no encontrado.";
         return RedirectToAction("Sala");
     }
+
+    var citasPrioritarias = new List<Cita>();
+
+   
+    if (consultorio.EliminarEspecialidad(idEspecialidad))
+    {
+        TempData["Mensaje"] = "Especialidad eliminada exitosamente.";
+        var citasARemover = consultorio.CitasAsignadas
+            .Where(c => c.Especialidad.IdEspecialidad == idEspecialidad)
+            .ToList();
+
+        foreach (var cita in citasARemover)
+        {
+            cita.asignada = false;
+            citasPrioritarias.Add(cita);
+            consultorio.CitasAsignadas.Remove(cita);
+        }
+        consultorio.ContarDuracion();
+    }
+    else
+    {
+        TempData["Error"] = "La especialidad no estaba registrada en este consultorio.";
+    }
+    fitnes1(); // Aquí podrías pasar citasPrioritarias si lo ajustas
+
+    return RedirectToAction("Sala");
+}
+
     [HttpPost]
     public IActionResult AgregarEspecialidadAConsultorio(int idConsultorio, int idEspecialidad)
     {
