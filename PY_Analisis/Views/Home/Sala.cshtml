@@ -33,15 +33,28 @@
   </div>
 </nav>
 <div class="Contenedor-Consultorios">
-    @foreach (var consultorio in ViewBag.Consultorios) {
-    if (consultorio.EstadoConsultorio == true) {
-        <img src="/Imagenes/Abierto.jpg" alt="Imagen 1" data-id="@consultorio.IdConsultorio" />
-    } else {
-        <img src="/Imagenes/cerrado.jpg" alt="Imagen 1" data-id="@consultorio.IdConsultorio" />
+    @foreach (var consultorio in ViewBag.Consultorios){
+        <div class="consultorio-wrapper">
+            <button class="btn-fila" type="button" data-id="@consultorio.IdConsultorio">Ver fila </button>
+            @if (consultorio.EstadoConsultorio == true)
+            {
+                <img src="/Imagenes/Abierto.jpg" alt="Consultorio Abierto" data-id="@consultorio.IdConsultorio" />
+            }
+            else
+            {
+                <img src="/Imagenes/cerrado.jpg" alt="Consultorio Cerrado" data-id="@consultorio.IdConsultorio" />
+            }
+            <div class="fila-citas">
+                @if (consultorio.CitasAsignadas != null)
+                {
+                    foreach (var cita in consultorio.CitasAsignadas)
+                    {
+                        <span class="punto-cita" title="Paciente ID: @cita.IdPaciente"></span>
+                    }
+                }
+            </div>
+        </div>
     }
-}
-
-
 </div>
 
 <div id="modalContainer"></div>
@@ -54,7 +67,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
 
     <script>
         @if (TempData["Mensaje"] != null)
@@ -150,7 +162,6 @@
         document.querySelectorAll('img[data-id]').forEach(img => {
             img.addEventListener('click', function () {
                 const id = this.dataset.id;
-
                 fetch(`/Home/MostrarConsultorio?id=${id}`)
                     .then(response => response.text())
                     .then(html => {
@@ -165,6 +176,28 @@
                             if (event.target === modal) modal.style.display = "none";
                         });
                     });
+            });
+        });
+
+        document.querySelectorAll('.btn-fila').forEach(button => {
+            button.addEventListener('click', () => {
+            const id = button.dataset.id;
+            fetch(`/Home/MostrarFilas?id=${id}`)
+                .then(response => response.text())
+                .then(html => {
+                document.getElementById("modalContainer").innerHTML = html;
+                const modal = document.getElementById("Cola-fila");
+                if (!modal) {
+                    console.error("No se encontró el modal con id 'modalCitas'");
+                    return;
+                }
+                modal.style.display = "block";
+                modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                window.addEventListener("click", event => {
+                    if (event.target === modal) modal.style.display = "none";
+                });
+                })
+                .catch(e => console.error("Error al cargar la fila:", e));
             });
         });
 

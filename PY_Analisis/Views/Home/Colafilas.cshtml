@@ -1,0 +1,35 @@
+@model AGBACKEND.Consultorios
+@using AGBACKEND
+@{
+    var pacientes = ViewBag.Pacientes as List<Paciente>;
+}
+
+<div id="Cola-fila" class="modal-Consultorio">
+    <div class="modal-content-Consultorio">
+        <span class="close">&times;</span>
+        <h2>Consultorio @Model.IdConsultorio</h2>
+
+        <div class="modal-scroll">
+            <h3>Pacientes en fila</h3>
+
+            @if (Model.CitasAsignadas == null || !Model.CitasAsignadas.Any())
+            {
+                <p>No hay pacientes en espera en este consultorio.</p>
+            }
+            else
+            {
+                <div class="contenedor-filas-pacientes">
+                    @foreach (var cita in Model.CitasAsignadas)
+                    {
+                        var paciente = pacientes?.FirstOrDefault(p => p.IdPaciente == cita.IdPaciente);
+                        <div class="consultorio-card">
+                            <p class="paciente-nombre">@((paciente != null) ? paciente.Nombre + " " + paciente.Apellido : "Paciente no encontrado")</p>
+                            <p class="paciente-especialidad">Especialidad: @cita.Especialidad?.Nombre</p>
+                            <p class="paciente-duracion">Duración: @cita.Especialidad?.Duracion min</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

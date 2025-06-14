@@ -54,13 +54,36 @@ public class HomeController : Controller
             await CargarPaciente();
             await CargarEspecialidad();
 
-            var Consultorio = new Consultorios();
-            Consultorio.RegistrarEspecialidad(1);
-            Consultorio.RegistrarEspecialidad(2);
-            ListaConsultorios.Add(Consultorio);
-            Consultorio.AbrirConsultorio();
+            // borrrar Pruebas 
+
+            var consultorio = new Consultorios();
+            consultorio.RegistrarEspecialidad(1);
+            consultorio.RegistrarEspecialidad(2);
+            ListaConsultorios.Add(consultorio);
+            consultorio.AbrirConsultorio();
+
+            var paciente1 = ListaPaciente.FirstOrDefault();
+            var paciente2 = ListaPaciente.Skip(1).FirstOrDefault();
+            var especialidad1 = ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == 1);
+            var especialidad2 = ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == 2);
+
+            if (paciente1 != null && especialidad1 != null)
+            {
+                var cita1 = new Cita(especialidad1, paciente1.IdPaciente);
+                consultorio.AgregarCita(cita1);
+                paciente1.Citas.Add(cita1);
+            }
+
+            if (paciente2 != null && especialidad2 != null)
+            {
+                var cita2 = new Cita(especialidad2, paciente2.IdPaciente);
+                consultorio.AgregarCita(cita2);
+                paciente2.Citas.Add(cita2);
+            }
+
+            // borrrar Pruebas 
+
             datosCargados = true;
-           
         }
 
 
@@ -71,10 +94,15 @@ public class HomeController : Controller
     }
 
 
-  public IActionResult MostrarConsultorio(int id){
+    public IActionResult MostrarConsultorio(int id){
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == id);
-
         return PartialView("EstadosConsultorios", consultorio);
+    }
+    public IActionResult MostrarFilas(int id){
+        var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == id);
+        ViewBag.Pacientes = ListaPaciente; 
+        Console.WriteLine(id);
+        return PartialView("Colafilas", consultorio);
     }
     
     [HttpPost]

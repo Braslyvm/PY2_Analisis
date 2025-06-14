@@ -200,28 +200,79 @@ html, body {
   display: flex;
   flex-wrap: wrap; 
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 10px;
   max-width: 100%;
   box-sizing: border-box;
   background-color: transparent;
   border: none;
-  gap: 10px; 
+  gap: 20px; 
   overflow: hidden; 
 }
 
-.Contenedor-Consultorios img {
-  width: calc(100% / 15 - 10px); 
-  max-width: 5%; 
-  height: auto;
-  flex: 1 1 auto;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+.consultorio-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% / 15 - 10px);
+  max-width: 5%;
 }
 
-.Contenedor-Consultorios img:hover {
+.consultorio-wrapper img {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border: 2px solid transparent;
+  border-radius: 5px;
+}
+
+.consultorio-wrapper img:hover {
   transform: scale(1.1);
   border-color: #007bff;
+}
+.btn-fila {
+  width: 100%;
+  padding: 6px 0;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0; 
+  border: 1px solid #007bff;
+  border-bottom: none; 
+  background-color: white;
+  color: #007bff;
+  transition: background-color 0.3s ease;
+}
+.btn-fila:hover {
+  background-color: #007bff;
+  color: white;
+}
+.fila-citas {
+  margin-top: 6px;
+  width: 100%;
+  min-height: 80px; 
+  background-color: transparent; 
+  border-left: 2px solid rgba(0, 0, 0, 0.6); 
+  border-right: 2px solid rgba(0, 0, 0, 0.6); 
+  border-top: none;
+  border-bottom: none;
+  display: flex;
+  flex-direction: column;  
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6px 0;
+  gap: 8px;
+  overflow-y: auto; 
+  box-shadow: none;
+}
+.punto-cita {
+  width: 16px;
+  height: 16px;
+  background-color: #ff0b0b;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: default;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.8);
 }
 .cerrar-consultorio {
     position: absolute;
@@ -230,7 +281,6 @@ html, body {
     transform: translateY(-5px);
     
 }
-
 .cerrar-consultorio button {
     background-color: #e74c3c !important;
     color: white !important;
@@ -245,8 +295,6 @@ html, body {
 .cerrar-consultorio button:hover {
     background-color: #c0392b;
 }
-
-
 .Abrir-consultorio {
     position: absolute;
     right: 2.3rem;
@@ -254,7 +302,6 @@ html, body {
     transform: translateY(-5px);
     
 }
-
 .Abrir-consultorio button {
     background-color: #00e70c !important;
     color: white !important;
