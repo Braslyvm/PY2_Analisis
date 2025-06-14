@@ -10,22 +10,50 @@ namespace AGBACKEND;
     /// <summary>
     ///
     /// </summary>
-    public class Consultorios
-    {
-        private static int lastID = 0;//contador de consultorios para id automatica
-        private static int ConsultoriosOpen = 0;
-        public int IdConsultorio { get; set; }
-        public bool EstadoConsultorio { get; set; }
-        public List<int>? IdEspecialidades { get; set; }
+   public class Consultorios
+{
+    private static int lastID = 0;
+    private static int ConsultoriosOpen = 0;
+    public int IdConsultorio { get; set; }
+    public bool EstadoConsultorio { get; set; }
+    public List<int>? IdEspecialidades { get; set; }
+    public List<Cita> CitasAsignadas { get; set; }
+    public int Duracion { get; set; }
 
-        public Consultorios()
+    public Consultorios()
+    {
+        lastID++;
+        ConsultoriosOpen++;
+        IdConsultorio = lastID;
+        EstadoConsultorio = false;
+        IdEspecialidades = new List<int>();
+        CitasAsignadas = new List<Cita>();
+        Duracion = 0;
+    }
+
+    public void ContarDuracion()
+    {
+        if (IdEspecialidades == null || !CitasAsignadas.Any())
         {
-            lastID++;
-            ConsultoriosOpen++;
-            IdConsultorio = lastID;
-            EstadoConsultorio = false;
-            IdEspecialidades = new List<int>();
+            Duracion = 0;
+            return;
         }
+
+        Duracion = CitasAsignadas
+            .Where(c => IdEspecialidades.Contains(c.Especialidad.IdEspecialidad))
+            .Sum(c => c.Especialidad.Duracion);
+    }
+
+    public bool AgregarCita(Cita nuevaCita)
+    {
+        if (!EstadoConsultorio || IdEspecialidades == null || 
+            !IdEspecialidades.Contains(nuevaCita.Especialidad.IdEspecialidad))
+            return false;
+
+        CitasAsignadas.Add(nuevaCita);
+        ContarDuracion();
+        return true;
+    }
 
         public bool CerrarConsultorio()
         {

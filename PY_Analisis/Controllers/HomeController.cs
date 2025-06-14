@@ -14,14 +14,11 @@ public class HomeController : Controller
     public static List<Especialidad> ListaEspecialidad { get; set; } = new List<Especialidad>();
     public static List<Consultorios> ListaConsultorios { get; set; } = new List<Consultorios>();
     public static List<Cita> Citas { get; set; } = new List<Cita>();
-
-    public static Puerta Puerta1 { get; set; } = new Puerta("Puerta 1");
-    public static Puerta Puerta2 { get; set; } = new Puerta("Puerta 2");
-    public static Puerta Puerta3 { get; set; } = new Puerta("Puerta 3");
-    public static Puerta Puerta4 { get; set; } = new Puerta("Puerta 4");
-    public static Puerta Puerta5 { get; set; } = new Puerta("Puerta 5");
+    
     public static List<Cita> ColaCitas { get; set; } = new List<Cita>();
     private static System.Timers.Timer? _timer; //deleay para llamadas a fitnes
+
+    List<Cita> citasPrioritariaslist = new List<Cita>();
 
     private static bool datosCargados = false;
     public IActionResult Index()
@@ -61,9 +58,9 @@ public class HomeController : Controller
             Consultorio.RegistrarEspecialidad(1);
             Consultorio.RegistrarEspecialidad(2);
             ListaConsultorios.Add(Consultorio);
-            Puerta1.CambiarEstado(Consultorio);
+            Consultorio.AbrirConsultorio();
             datosCargados = true;
-            datosCargados = true;
+           
         }
 
 
@@ -83,11 +80,23 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult CerrarConsultorio(int IdConsultorio)
     {
-
-
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == IdConsultorio);
 
         consultorio.EstadoConsultorio = false;
+       
+        var citasPrioritarias = new List<Cita>();
+        if (consultorio.CitasAsignadas.Any())
+        {
+            foreach (var cita in consultorio.CitasAsignadas)
+            {
+                cita.asignada = false; 
+                citasPrioritarias.Add(cita);
+                
+            }
+            consultorio.CitasAsignadas.Clear();
+            consultorio.Duracion=0; 
+            fitnes1();
+        }
         return RedirectToAction("Sala");
     }
     
@@ -97,6 +106,26 @@ public class HomeController : Controller
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == IdConsultorio);
 
         consultorio.EstadoConsultorio = true;
+        var citasPrioritarias = new List<Cita>();
+        foreach (var c in ListaConsultorios)
+        {
+            if (c.IdConsultorio != IdConsultorio && c.EstadoConsultorio)
+            {
+                
+                var citasAReorganizar = c.CitasAsignadas.Skip(1).ToList();
+
+                foreach (var cita in citasAReorganizar)
+                {
+                    cita.asignada = false;
+                    citasPrioritarias.Add(cita);
+                    
+                }
+                c.CitasAsignadas = c.CitasAsignadas.Take(1).ToList();
+                c.ContarDuracion(); 
+            }
+        }
+        fitnes1();
+
         return RedirectToAction("Sala");
     }
      [HttpPost]
@@ -260,80 +289,117 @@ public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
     //esta funcion solo lee las citas que hay y las asigna a cola o a una fila
    // falta validar que no pueda entrar en el tiempo estimado.
    //validar que la fila tenga consultorio asignado
-    public IActionResult fitnes1()
-{     Console.WriteLine("⚙️ Timer ejecutando fitnes1: Verificando citas pendientes...");
+
+
+   public IActionResult fitnes1()
+{
+    Console.WriteLine("⚙️ Timer ejecutando fitnes1: Verificando citas pendientes...");
+
+    // citas pendientes (no asignadas)
     var citasPendientes = Citas.Where(c => !c.asignada).ToList();
 
-    foreach (var cita in citasPendientes)
-    {       Console.WriteLine($" Revisando cita ID: {cita.IdCita}, Especialidad: {cita.Especialidad.Nombre}, Paciente ID: {cita.IdPaciente}");
+    //  citas previamente asignadas que vienen de consultorios cerrados CAMBIAR EL ESTADO DE LA CITA SEGUN CORRESPONDA 
+    var citasPrioritarias  = citasPrioritariaslist
+        .Where(c => !c.asignada)
+        .ToList();
+    ReorganizarCitas(citasPrioritarias, citasPendientes, ListaConsultorios, ColaCitas);
 
-        //si alguien en cola
-        Cita citaYaEnCola = ColaCitas.FirstOrDefault(c => c.Especialidad.IdEspecialidad == cita.Especialidad.IdEspecialidad);
-
-        if (citaYaEnCola == null)//si no hat nadie en la cola
+    // 4. Mostrar estado final de los consultorios
+    Console.WriteLine("\n📋 Estado actual de consultorios y sus citas asignadas:");
+    foreach (var consultorio in ListaConsultorios)
+    {
+        Console.WriteLine($"🟢 Consultorio {consultorio.IdConsultorio} (Abierto: {consultorio.EstadoConsultorio} duracion: {consultorio.Duracion})");
+        if (consultorio.CitasAsignadas.Any())
         {
-            bool asignada = AsignarPuertaACita(cita);
-
-            if (asignada)
+            foreach (var cita in consultorio.CitasAsignadas)
             {
-                cita.asignada = true;
-                Console.WriteLine($"Cita {cita.IdCita} asignada directamente a una puerta.");
-          
-            }
-            else
-            {
-                if (!ColaCitas.Contains(cita))
-                {
-                    ColaCitas.Add(cita);
-                     Console.WriteLine($" Cita {cita.IdCita} no fue asignada, agregada a la cola.");
-               
-                }
+                Console.WriteLine($"   ↳ Cita ID: {cita.IdCita}, Paciente: {cita.IdPaciente}, Especialidad: {cita.Especialidad?.Nombre ?? "Desconocida"}");
             }
         }
-        else{
-            //si hay alguien en la cola
-            bool asignadaDesdeCola = AsignarPuertaACita(citaYaEnCola);
-            if (asignadaDesdeCola)
-                {
-                    citaYaEnCola.asignada = true;
-                    ColaCitas.Remove(citaYaEnCola);
-                 Console.WriteLine($" Cita {citaYaEnCola.IdCita} fue tomada desde la cola y asignada a una puerta.");
-           
-                }
-                if (!ColaCitas.Contains(cita))
-                {
-                    ColaCitas.Add(cita); 
-                    Console.WriteLine($"Cita {cita.IdCita} agregada a la cola.");
-          
-                }
+        else
+        {
+            Console.WriteLine("   ↳ Sin citas asignadas.");
         }
     }
-     Console.WriteLine("Proceso de asignación finalizado.");
-    
+
+    Console.WriteLine("✅ Proceso de asignación finalizado.");
     return Ok("Proceso de asignación completado.");
 }
 
+
+
 //esto solo asigna a la primer puerta que tenga menos tiempo 
-private bool AsignarPuertaACita(Cita cita)
+private bool AsignarConsultorioACita(Cita cita, List<Consultorios> consultorios)
 {
-    var puertas = new List<Puerta> { Puerta1, Puerta2, Puerta3, Puerta4, Puerta5 };
-    var puertasDisponibles = puertas
-        .Where(p => p.Estado &&
-                    p.Consultorio != null &&
-                    p.Consultorio.IdEspecialidades.Contains(cita.Especialidad.IdEspecialidad))
-        .OrderBy(p => p.Duracion)
+    var disponibles = consultorios
+        .Where(c => c.EstadoConsultorio &&
+                    c.IdEspecialidades.Contains(cita.Especialidad.IdEspecialidad))
+        .OrderBy(c => c.Duracion)
         .ToList();
 
-    if (puertasDisponibles.Any())
+    if (disponibles.Any())
     {
-        var mejorPuerta = puertasDisponibles.First();
-        if (mejorPuerta.AgregarCita(cita))
+        var mejor = disponibles.First();
+        return mejor.AgregarCita(cita);
+    }
+
+    return false;
+}
+
+public void ReorganizarCitas(List<Cita> citasPrioritarias, List<Cita> citasNormales, List<Consultorios> consultorios, List<Cita> ColaCitas)
+{
+    Console.WriteLine("🔄 Reorganizando citas: Prioridad primero, luego por duración...");
+
+    // 1. Asignar citas prioritarias primero (no importa duración)
+    foreach (var cita in citasPrioritarias)
+    {
+        bool asignada = AsignarConsultorioACita(cita, consultorios);
+        if (asignada)
         {
-            return true;
+            cita.asignada = true;
+            Console.WriteLine($"✅ Cita PRIORITARIA ID {cita.IdCita} asignada.");
+        }
+        else
+        {
+            if (!ColaCitas.Contains(cita))
+            {
+                ColaCitas.Insert(0, cita); // Insertar al inicio de la cola
+                Console.WriteLine($"🕒 Cita PRIORITARIA ID {cita.IdCita} añadida al INICIO de la cola.");
+            }
         }
     }
-    return false;
-}}
+
+    //  Asignar citas normales (ordenadas por menor duración)
+    var ordenadas = citasNormales
+        .Where(c => !c.asignada)
+        .OrderBy(c => c.ConsultarDuracion())
+        .ToList();
+
+    foreach (var cita in ordenadas)
+    {
+        bool asignada = AsignarConsultorioACita(cita, consultorios);
+        if (asignada)
+        {
+            cita.asignada = true;
+            Console.WriteLine($"✅ Cita NORMAL ID {cita.IdCita} asignada.");
+        }
+        else
+        {
+            if (!ColaCitas.Contains(cita))
+            {
+                ColaCitas.Add(cita); // Insertar al final de la cola
+                Console.WriteLine($"🕒 Cita NORMAL ID {cita.IdCita} añadida al FINAL de la cola.");
+            }
+        }
+    }
+
+    Console.WriteLine("🎯 Reorganización finalizada.");
+}
+
+
+
+
+}
 
 
        

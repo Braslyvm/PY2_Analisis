@@ -15,6 +15,8 @@ namespace AGBACKEND;
         public int Cedula { get; set; }
         public bool Atencion { get; set; }
         public List<Cita> Citas { get; set; } = new List<Cita>();
+        public Paciente.EstadoCita Estado { get; set; } = Paciente.EstadoCita.EnEspera;
+
         public Paciente(string nombre, string apellido,int cedula) 
         {
             lastIdPaciente++;
@@ -24,6 +26,13 @@ namespace AGBACKEND;
             Cedula= cedula;
             Atencion=false;
         }
+        public enum EstadoCita
+        {
+            EnEspera,
+            Atendiendo,
+            Atendido
+        }
+        
 
       
     }

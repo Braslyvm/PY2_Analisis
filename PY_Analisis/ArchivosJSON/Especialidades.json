@@ -5,35 +5,35 @@
   },
   {
     "Nombre": "prueba2",
-    "Duracion": 45
+    "Duracion": 40
   },
   {
     "Nombre": "prueba3",
-    "Duracion": 45
+    "Duracion": 30
   },
   {
     "Nombre": "Cardiología",
-    "Duracion": 45
+    "Duracion": 10
   },
   {
     "Nombre": "Dermatología",
-    "Duracion": 45
+    "Duracion": 15
   },
   {
     "Nombre": "Pediatría",
-    "Duracion": 45
+    "Duracion": 60
   },
   {
     "Nombre": "Ginecología",
-    "Duracion": 45
+    "Duracion": 120
   },
   {
     "Nombre": "Psiquiatría",
-    "Duracion": 45
+    "Duracion": 200
   },
   {
     "Nombre": "Oftalmología",
-    "Duracion": 45
+    "Duracion": 170
   },
   {
     "Nombre": "Urología",
