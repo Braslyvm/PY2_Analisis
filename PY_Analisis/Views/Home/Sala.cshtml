@@ -59,8 +59,6 @@
 
 <div id="modalContainer"></div>
 
-
-
 @section Scripts {
  
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -112,7 +110,6 @@
                     });
                 });
         });
-
         document.getElementById("botton-Paciente").addEventListener("click", function () {
         fetch('/Home/AgregarPacientes')
             .then(response => response.text())
@@ -204,6 +201,5 @@
                 .catch(e => console.error("Error al cargar la fila:", e));
             });
         });
-
     </script>
 }
