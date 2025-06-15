@@ -18,7 +18,6 @@ C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_An
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\scopedcss\bundle\PY_Analisis.styles.css
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\scopedcss\projectbundle\PY_Analisis.bundle.scp.css
-C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\compressed\3y9exyn7nb-{0}-dz90lonyd5-dz90lonyd5.gz
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\compressed\s2b2f0cbwh-{0}-5ipweew5fc-5ipweew5fc.gz
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\compressed\o9ozntpsj1-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\compressed\88cgjltxk3-{0}-wqqe4ucakv-wqqe4ucakv.gz
@@ -92,3 +91,6 @@ C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\refin
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.pdb
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\PY_Analisis.genruntimeconfig.cache
 C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\ref\PY_Analisis.dll
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\bin\Debug\net10.0\ArchivosJSON\Especialidades.json
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\bin\Debug\net10.0\ArchivosJSON\Pacientes.json
+C:\Users\brasl\Documents\GitHub\PY2_Analisis\PY_Analisis\obj\Debug\net10.0\compressed\3y9exyn7nb-{0}-zb4u08y01x-zb4u08y01x.gz

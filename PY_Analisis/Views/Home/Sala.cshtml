@@ -42,7 +42,14 @@
     <button class="btn-cuadrado">
         <img src="https://cdn-icons-png.flaticon.com/128/17400/17400193.png" alt="icono" />
     </button>
-    <button class="btn-cuadrado" type="button">Ver fila</button>
+    <button class="btn-cuadrado" type="button">Asignar fila</button>
+    @if(ViewBag.Ramdon == false) {
+        <form asp-controller="Home" asp-action="RamdonConsultorios" method="post">
+            <button type="submit" class="btn-cuadrado">
+                Ramdon
+            </button>
+        </form>
+    }
 </div>
 
 <div id="modalContainer"></div>

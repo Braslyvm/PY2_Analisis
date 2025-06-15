@@ -22,6 +22,10 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/AgendarCita.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZ2VuZGFyQ2l0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/AgregarEspecialidad.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZ3JlZ2FyRXNwZWNpYWxpZGFkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -30,8 +34,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZ3JlZ2FyUGFjaWVudGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/CrearConsultorio.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDcmVhckNvbnN1bHRvcmlvLmNzaHRtbA==
+[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/Colafilas.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDb2xhZmlsYXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/consultorio.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxjb25zdWx0b3Jpby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/EstadosConsultorios.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxFc3RhZG9zQ29uc3VsdG9yaW9zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/Index.cshtml]
@@ -40,6 +52,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/Sala.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTYWxhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/_Citascola.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxfQ2l0YXNjb2xhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Home/_Consultoriosfila.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxfQ29uc3VsdG9yaW9zZmlsYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/brasl/Documents/GitHub/PY2_Analisis/PY_Analisis/Views/Shared/Error.cshtml]

@@ -17,7 +17,7 @@ public class HomeController : Controller
 
     public static List<Cita> ColaCitas { get; set; } = new List<Cita>(); //citas procesadas sin consultorio 
     private static System.Timers.Timer? _timer; //deleay para llamadas a fitnes
-
+    public static bool Ramdon { get; set; } = false;
     List<Cita> citasPrioritariaslist = new List<Cita>();//lista uxiliar para dar prioridad cuando se cierra o abre consultorio
 
     private static bool datosCargados = false;
@@ -82,7 +82,7 @@ public class HomeController : Controller
 
             datosCargados = true;
         }
-
+        ViewBag.Ramdon = Ramdon;    
         ViewBag.Citas = Citas;
         ViewBag.Consultorios = ListaConsultorios;
         return View(ListaPaciente);
@@ -234,6 +234,25 @@ public class HomeController : Controller
 
         return RedirectToAction("Sala");
     }
+    public IActionResult RamdonConsultorios()
+    {
+        Ramdon = true ;
+        TempData["Mensaje"] = "Se generaron los consultorios ramdon";
+
+        for (int i = 0; i < 5; i++) {
+            var nueva = new Consultorios();
+            Random random = new();
+            for (int y = 0; y < 4; y++)
+            {
+                int idAleatorio = random.Next(1, ListaEspecialidad.Count + 1);
+                nueva.RegistrarEspecialidad(idAleatorio);
+                
+            }
+            ListaConsultorios.Add(nueva);
+        }
+
+        return RedirectToAction("Sala");
+    }
 
     public IActionResult EliminarEspecialidadDeConsultorio(int idConsultorio, int idEspecialidad)
     {
@@ -246,7 +265,7 @@ public class HomeController : Controller
         var citasPrioritarias = new List<Cita>();
         if (consultorio.EliminarEspecialidad(idEspecialidad))
         {
-            TempData["Mensaje"] = "Especialidad eliminada exitosamente."; 
+            TempData["Mensaje"] = "Especialidad eliminada exitosamente.";
             List<Cita> todasLasCitas = new List<Cita>();
             foreach (var con in ListaConsultorios)
             {
@@ -261,7 +280,7 @@ public class HomeController : Controller
         {
             TempData["Error"] = "La especialidad no estaba registrada en este consultorio.";
         }
-      
+
         return RedirectToAction("Sala");
     }
 
