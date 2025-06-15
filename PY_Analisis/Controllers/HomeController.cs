@@ -96,7 +96,7 @@ public class HomeController : Controller
 
     public IActionResult Citascola()
     {
-        var citas = Citas; // O desde donde provengan
+        var citas = ColaCitas; // O desde donde provengan
         return PartialView("_Citascola", citas);
     }
 
@@ -386,16 +386,25 @@ public class HomeController : Controller
             Fitnes(cita, ListaConsultorios);
         }
     }
-    public void ReacomodarColas()
+    [HttpPost]
+    public IActionResult ReacomodarColasinterfas()
+    {
+        ReacomodarColas();
+        return RedirectToAction("Sala");
+    }
+
+    private void ReacomodarColas()
     {
         var citasPrioritarias = ColaCitas.OrderBy(c => c.IdCita).ToList();
         foreach (var cita in citasPrioritarias)
         {
-            if (Fitnes(cita, ListaConsultorios)){
-                 ColaCitas.Remove(cita);
-            };
+            if (Fitnes(cita, ListaConsultorios))
+            {
+                ColaCitas.Remove(cita);
+            }
         }
     }
+
 }
 
 
