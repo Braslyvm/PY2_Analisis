@@ -13,12 +13,12 @@ public class HomeController : Controller
     public static List<Paciente> ListaPaciente { get; set; } = new List<Paciente>();
     public static List<Especialidad> ListaEspecialidad { get; set; } = new List<Especialidad>();
     public static List<Consultorios> ListaConsultorios { get; set; } = new List<Consultorios>();
-    public static List<Cita> Citas { get; set; } = new List<Cita>();
+    public static List<Cita> Citas { get; set; } = new List<Cita>();  //objeto citas 
 
-    public static List<Cita> ColaCitas { get; set; } = new List<Cita>();
+    public static List<Cita> ColaCitas { get; set; } = new List<Cita>(); //citas procesadas sin consultorio 
     private static System.Timers.Timer? _timer; //deleay para llamadas a fitnes
 
-    List<Cita> citasPrioritariaslist = new List<Cita>();
+    List<Cita> citasPrioritariaslist = new List<Cita>();//lista uxiliar para dar prioridad cuando se cierra o abre consultorio
 
     private static bool datosCargados = false;
     public IActionResult Index()
@@ -39,7 +39,7 @@ public class HomeController : Controller
     private void TimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
         try{
-            fitnes1();
+           // fitnes1();
         }
         catch (Exception ex)
         {
@@ -131,54 +131,31 @@ public class HomeController : Controller
 
         todasLasCitas.AddRange(lista);
 
-        /*
-        var citasPrioritarias = new List<Cita>();
-        if (consultorio.CitasAsignadas.Any())
-        {
-            foreach (var cita in consultorio.CitasAsignadas)
-            {
-                cita.asignada = false;
-                citasPrioritarias.Add(cita);
-
-            }
-            consultorio.CitasAsignadas.Clear();
-            consultorio.Duracion = 0;
-            fitnes1();
-        }
-        */
-
-        fitnees(todasLasCitas);
+        ReacomodarCitas(todasLasCitas);
         return RedirectToAction("Sala");
     }
 
     [HttpPost]
+
     public IActionResult AbrirConsultorio(int IdConsultorio)
     {
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == IdConsultorio);
-
         consultorio.EstadoConsultorio = true;
-        var citasPrioritarias = new List<Cita>();
-        foreach (var c in ListaConsultorios)
+
+       
+        List<Cita> todasLasCitas = new List<Cita>();
+        foreach (var con in ListaConsultorios)
         {
-            if (c.IdConsultorio != IdConsultorio && c.EstadoConsultorio)
-            {
-
-                var citasAReorganizar = c.CitasAsignadas.Skip(1).ToList();
-
-                foreach (var cita in citasAReorganizar)
-                {
-                    cita.asignada = false;
-                    citasPrioritarias.Add(cita);
-
-                }
-                c.CitasAsignadas = c.CitasAsignadas.Take(1).ToList();
-                c.ContarDuracion();
-            }
+            todasLasCitas.AddRange(con.CitasAsignadas);
+            con.CitasAsignadas = new List<Cita>();
+            con.ContarDuracion();
         }
-        fitnes1();
+
+        ReacomodarCitas(todasLasCitas);
 
         return RedirectToAction("Sala");
     }
+
     [HttpPost]
 
 
@@ -266,31 +243,25 @@ public class HomeController : Controller
             TempData["Error"] = "Consultorio no encontrado.";
             return RedirectToAction("Sala");
         }
-
         var citasPrioritarias = new List<Cita>();
-
-
         if (consultorio.EliminarEspecialidad(idEspecialidad))
         {
-            TempData["Mensaje"] = "Especialidad eliminada exitosamente.";
-            var citasARemover = consultorio.CitasAsignadas
-                .Where(c => c.Especialidad.IdEspecialidad == idEspecialidad)
-                .ToList();
-
-            foreach (var cita in citasARemover)
+            TempData["Mensaje"] = "Especialidad eliminada exitosamente."; 
+            List<Cita> todasLasCitas = new List<Cita>();
+            foreach (var con in ListaConsultorios)
             {
-                cita.asignada = false;
-                citasPrioritarias.Add(cita);
-                consultorio.CitasAsignadas.Remove(cita);
+                todasLasCitas.AddRange(con.CitasAsignadas);
+                con.CitasAsignadas = new List<Cita>();
+                con.ContarDuracion();
             }
-            consultorio.ContarDuracion();
+            ReacomodarCitas(todasLasCitas);
+
         }
         else
         {
             TempData["Error"] = "La especialidad no estaba registrada en este consultorio.";
         }
-        fitnes1(); // Aquí podrías pasar citasPrioritarias si lo ajustas
-
+      
         return RedirectToAction("Sala");
     }
 
@@ -312,6 +283,15 @@ public class HomeController : Controller
 
         if (consultorio.RegistrarEspecialidad(idEspecialidad))
         {
+            List<Cita> todasLasCitas = new List<Cita>();
+            foreach (var con in ListaConsultorios)
+            {
+                todasLasCitas.AddRange(con.CitasAsignadas);
+                con.CitasAsignadas = new List<Cita>();
+                con.ContarDuracion();
+            }
+            ReacomodarCitas(todasLasCitas);
+            
             TempData["Mensaje"] = "Especialidad agregada exitosamente.";
         }
         else
@@ -357,49 +337,11 @@ public class HomeController : Controller
         paciente.Citas.Add(nuevaCita);
         Console.WriteLine($"Nueva cita agendada: ID:{nuevaCita.IdCita}, Especialidad:{especialidad.Nombre}, Paciente:{idPaciente}");
         TempData["Mensaje"] = "Cita agendada exitosamente.";
+        ColaCitas.Add(nuevaCita);
+        ReacomodarColas();
         return RedirectToAction("Sala");
     }
-    //esta funcion solo lee las citas que hay y las asigna a cola o a una fila
-    // falta validar que no pueda entrar en el tiempo estimado.
-    //validar que la fila tenga consultorio asignado
-
-    public IActionResult fitnes1()
-    {
-        Console.WriteLine("⚙️ Timer ejecutando fitnes1: Verificando citas pendientes...");
-
-        // citas pendientes (no asignadas)
-        var citasPendientes = Citas.Where(c => !c.asignada).ToList();
-
-        //  citas previamente asignadas que vienen de consultorios cerrados CAMBIAR EL ESTADO DE LA CITA SEGUN CORRESPONDA 
-        var citasPrioritarias = citasPrioritariaslist
-            .Where(c => !c.asignada)
-            .ToList();
-        ReorganizarCitas(citasPrioritarias, citasPendientes, ListaConsultorios, ColaCitas);
-
-        // 4. Mostrar estado final de los consultorios
-        Console.WriteLine("\n📋 Estado actual de consultorios y sus citas asignadas:");
-        foreach (var consultorio in ListaConsultorios)
-        {
-            Console.WriteLine($"🟢 Consultorio {consultorio.IdConsultorio} (Abierto: {consultorio.EstadoConsultorio} duracion: {consultorio.Duracion})");
-            if (consultorio.CitasAsignadas.Any())
-            {
-                foreach (var cita in consultorio.CitasAsignadas)
-                {
-                    Console.WriteLine($"   ↳ Cita ID: {cita.IdCita}, Paciente: {cita.IdPaciente}, Especialidad: {cita.Especialidad?.Nombre ?? "Desconocida"}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("   ↳ Sin citas asignadas.");
-            }
-        }
-
-        Console.WriteLine("✅ Proceso de asignación finalizado.");
-        return Ok("Proceso de asignación completado.");
-    }
-
-    //esto solo asigna a la primer puerta que tenga menos tiempo 
-    private bool AsignarConsultorioACita(Cita cita, List<Consultorios> consultorios)
+    private bool Fitnes(Cita cita, List<Consultorios> consultorios)
     {
         var disponibles = consultorios
             .Where(c => c.EstadoConsultorio &&
@@ -416,57 +358,23 @@ public class HomeController : Controller
         return false;
     }
 
-    public void ReorganizarCitas(List<Cita> citasPrioritarias, List<Cita> citasNormales, List<Consultorios> consultorios, List<Cita> ColaCitas)
-    {
-        Console.WriteLine("🔄 Reorganizando citas: Prioridad primero, luego por duración...");
-        foreach (var cita in citasPrioritarias)
-        {
-            bool asignada = AsignarConsultorioACita(cita, consultorios);
-            if (asignada)
-            {
-                cita.asignada = true;
-                Console.WriteLine($"✅ Cita PRIORITARIA ID {cita.IdCita} asignada.");
-            }
-            else
-            {
-                if (!ColaCitas.Contains(cita))
-                {
-                    ColaCitas.Insert(0, cita); // Insertar al inicio de la cola
-                    Console.WriteLine($"🕒 Cita PRIORITARIA ID {cita.IdCita} añadida al INICIO de la cola.");
-                }
-            }
-        }
-        //  Asignar citas normales (ordenadas por menor duración)
-        var ordenadas = citasNormales
-            .Where(c => !c.asignada)
-            .OrderBy(c => c.ConsultarDuracion())
-            .ToList();
-
-        foreach (var cita in ordenadas)
-        {
-            bool asignada = AsignarConsultorioACita(cita, consultorios);
-            if (asignada)
-            {
-                cita.asignada = true;
-                Console.WriteLine($"✅ Cita NORMAL ID {cita.IdCita} asignada.");
-            }
-            else
-            {
-                if (!ColaCitas.Contains(cita))
-                {
-                    ColaCitas.Add(cita);
-                    Console.WriteLine($"🕒 Cita NORMAL ID {cita.IdCita} añadida al FINAL de la cola.");
-                }
-            }
-        }
-        Console.WriteLine("🎯 Reorganización finalizada.");
-    }
-    public void fitnees(List<Cita> citasPrioritarias)
+  
+    public void ReacomodarCitas(List<Cita> citasPrioritarias)
     {
         citasPrioritarias = citasPrioritarias.OrderBy(c => c.IdCita).ToList();
         foreach (var cita in citasPrioritarias)
         {
-            AsignarConsultorioACita(cita, ListaConsultorios);
+            Fitnes(cita, ListaConsultorios);
+        }
+    }
+    public void ReacomodarColas()
+    {
+        var citasPrioritarias = ColaCitas.OrderBy(c => c.IdCita).ToList();
+        foreach (var cita in citasPrioritarias)
+        {
+            if (Fitnes(cita, ListaConsultorios)){
+                 ColaCitas.Remove(cita);
+            };
         }
     }
 }
