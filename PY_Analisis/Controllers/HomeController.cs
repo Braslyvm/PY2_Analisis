@@ -77,26 +77,24 @@ public class HomeController : Controller
                 paciente2.Citas.Add(cita2);
             }
 
-            // borrrar Pruebas 
-
             datosCargados = true;
         }
         ViewBag.Ramdon = Ramdon;    
-        ViewBag.Citas = Citas;
+        ViewBag.ColaCitas = ColaCitas;
         ViewBag.Consultorios = ListaConsultorios;
         return View(ListaPaciente);
     }
 
-   public IActionResult Consultoriosfila()
+   [HttpGet]
+    public IActionResult Consultoriosfila()
     {
-        var lista = ListaConsultorios; // O donde guardes tus datos
-        return PartialView("_Consultoriosfila", lista);
+        return PartialView("_Consultoriosfila", ListaConsultorios);
     }
 
+    [HttpGet]
     public IActionResult Citascola()
     {
-        var citas = ColaCitas; // O desde donde provengan
-        return PartialView("_Citascola", citas);
+        return PartialView("_Citascola", ColaCitas);
     }
 
     public IActionResult MostrarConsultorio(int id)
