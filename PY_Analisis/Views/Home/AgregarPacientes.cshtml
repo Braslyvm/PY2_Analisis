@@ -2,20 +2,29 @@
 <div id="modalPaciente" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Agregar Paciente</h2>
-       
-        <form id="formulario" action="/Home/AgregarPacientes" method="post">
-            <label>Nombre:</label>
-            <input type="text" name="nombre" required /><br />
+        <div class="modal-scroll">
+            <h2>Agregar Paciente</h2>
+            <div class="vista">
+                <form id="formulario" action="/Home/AgregarPacientes" method="post">
+                    <div class="campo">
+                        <label>Nombre:</label>
+                        <input type="text" name="nombre" required />
+                    </div>
 
-            <label>Apellido:</label>
-            <input type="text" name="apellido" required /><br />
+                    <div class="campo">
+                        <label>Apellido:</label>
+                        <input type="text" name="apellido" required />
+                    </div>
 
-            <label>Cédula:</label>
-            <input type="number" name="cedula" required /><br />
+                    <div class="campo">
+                        <label>Cédula:</label>
+                        <input type="number" name="cedula" required />
+                    </div>
 
-            <button type="submit">Guardar</button>
-        </form>
+                    <button type="submit">Guardar</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
