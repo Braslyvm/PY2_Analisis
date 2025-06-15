@@ -19,7 +19,7 @@ namespace AGBACKEND;
     public List<int>? IdEspecialidades { get; set; }
     public List<Cita> CitasAsignadas { get; set; }
     public int Duracion { get; set; }
-
+    public bool Atendiendo{ get; set; }
     public Consultorios()
     {
         lastID++;
@@ -29,6 +29,7 @@ namespace AGBACKEND;
         IdEspecialidades = new List<int>();
         CitasAsignadas = new List<Cita>();
         Duracion = 0;
+        Atendiendo=false;
     }
 
     public void ContarDuracion()

@@ -26,25 +26,11 @@ public class HomeController : Controller
         return View();
     }
     
-    public void Cronometro(double milisegundos)
-    {
-        if (_timer != null)
-        {
-            _timer.Stop();
-            _timer.Dispose();
-        }
-
-        _timer = new System.Timers.Timer(milisegundos); // por ejemplo 5000 = 5 segundos
-        _timer.Elapsed += (sender, e) =>
-        {
-            _timer.Stop();
-            _timer.Dispose();
-            _timer = null;
-
-        };
-        _timer.AutoReset = false;
-        _timer.Enabled = true;
-    }
+    public async Task<bool> Cronometro(int milisegundos)
+{
+    await Task.Delay(milisegundos); 
+    return true;
+}
     public async Task<IActionResult> Sala()
     {
         if (!datosCargados)
@@ -413,8 +399,38 @@ public class HomeController : Controller
         Console.WriteLine("Contenido actual de la ColaCitas:");  
     }
 
-     
+     // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
+     //
+    public async void AtenderPaciente()
+    {
+        foreach (var consul in ListaConsultorios)
+        {
+            if (!consul.Atendiendo && consul.CitasAsignadas.Any())
+            {
+                consul.Atendiendo = true;
+                var cita = consul.CitasAsignadas.First();
+                var paciente = ListaPaciente.FirstOrDefault(p => p.IdPaciente == cita.IdPaciente);
 
+                if (paciente != null)
+                {
+                    paciente.Estado = Paciente.EstadoCita.Atendiendo;
+                  
+                  
+                    _ = AtenderCitaAsync(consul, paciente, cita);
+                }
+            }
+        }
+    }
+
+    private async Task AtenderCitaAsync(Consultorios consul, Paciente paciente, Cita cita)
+    {
+         Console.WriteLine($"Atendiendo paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
+    
+        await Task.Delay(cita.Especialidad.duracion * 1000); // esperar sin bloquear
+        paciente.Estado = Paciente.EstadoCita.Atendido;
+        consul.CitasAsignadas.Remove(cita);
+        consul.Atendiendo = false;
+    }
 
 }
 
