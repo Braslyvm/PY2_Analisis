@@ -12,7 +12,7 @@ public class HomeController : Controller
 {
     public static List<Paciente> ListaPaciente { get; set; } = new List<Paciente>();
     public static List<Especialidad> ListaEspecialidad { get; set; } = new List<Especialidad>();
-    public static List<Consultorios> ListaConsultorios { get; set; } = new List<Consultorios>();
+    public static List<Consultorios>  { get; set; } = new List<Consultorios>();
     public static List<Cita> Citas { get; set; } = new List<Cita>();  //objeto citas 
 
     public static List<Cita> ColaCitas { get; set; } = new List<Cita>(); //citas procesadas sin consultorio 
@@ -22,7 +22,14 @@ public class HomeController : Controller
 
     private static bool datosCargados = false;
     public IActionResult Index()
-    {
+        {if (_timer == null)
+        {
+            _timer = new System.Timers.Timer(5000); // 5 segundos
+            _timer.Elapsed += (sender, e) => AtenderPaciente();
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+
         return View();
     }
     
@@ -61,7 +68,7 @@ public class HomeController : Controller
                 var cita2 = new Cita(especialidad2, paciente2.IdPaciente);
                 consultorio.AgregarCita(cita2);
                 paciente2.Citas.Add(cita2);
-            }
+            }ListaConsultorios
 
             datosCargados = true;
         }
@@ -423,11 +430,12 @@ public class HomeController : Controller
     private async Task AtenderCitaAsync(Consultorios consul, Paciente paciente, Cita cita)
     {
          Console.WriteLine($"Atendiendo paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
-    
-        await Task.Delay(cita.Especialidad.duracion * 1000); // esperar sin bloquear
-        paciente.Estado = Paciente.EstadoCita.Atendido;
         consul.CitasAsignadas.Remove(cita);
+        await Task.Delay(cita.Especialidad.Duracion * 1000); // esperar sin bloquear
+        paciente.Estado = Paciente.EstadoCita.Atendido;
         consul.Atendiendo = false;
+         Console.WriteLine($"atendido paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
+       
     }
 
 }
