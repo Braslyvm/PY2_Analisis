@@ -37,7 +37,7 @@
 
 <div class="Contenedor-bajo">
     <div class="Contenedor-cola">
-        @await Html.PartialAsync("_Citascola", (List<Cita>)ViewBag.Citas)
+        @await Html.PartialAsync("_Citascola", (List<Cita>)ViewBag.ColaCitas)
     </div>
     <button class="btn-cuadrado">
         <img src="https://cdn-icons-png.flaticon.com/128/17400/17400193.png" alt="icono" />
@@ -64,14 +64,23 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
-        setInterval(function () {
-            $("#contenedor-consultorios").load("/Home/Consultoriosfila");
-        }, 1000);
+        function recargarConsultorios() {
+            console.log("Intentando recargar consultorios...");
+            $("#contenedor-consultorios").load("/Home/Consultoriosfila", function () {
+                console.log("Consultorios actualizados");
+            });
+        }
 
-        // Recargar citas cada 5 segundos
-        setInterval(function () {
-            $("#contenedor-citas").load("/Home/Citascola");
-        }, 1000);
+        function recargarCitas() {
+            console.log("Intentando recargar citas...");
+            $("#contenedor-citas").load("/Home/Citascola", function () {
+                console.log("Citas actualizadas");
+            });
+        }
+
+        setInterval(recargarConsultorios, 1);
+        setInterval(recargarCitas, 1);
+
         toastr.options = {
         "positionClass": "toast-top-left"
         };
