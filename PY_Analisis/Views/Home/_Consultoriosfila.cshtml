@@ -1,0 +1,36 @@
+@model List<AGBACKEND.Consultorios>
+
+@foreach (var consultorio in Model ?? new List<AGBACKEND.Consultorios>())
+{
+    <div class="consultorio-wrapper">
+        <button class="btn-fila" type="button" data-id="@consultorio.IdConsultorio">Ver fila</button>
+
+        @if (consultorio.EstadoConsultorio)
+        {
+            <img src="/Imagenes/Abierto.jpg" alt="Consultorio Abierto" data-id="@consultorio.IdConsultorio" />
+        }
+        else
+        {
+            <img src="/Imagenes/cerrado.jpg" alt="Consultorio Cerrado" data-id="@consultorio.IdConsultorio" />
+        }
+
+        <div class="fila-citas">
+            @if (consultorio.CitasAsignadas != null)
+            {
+                var totalCitas = consultorio.CitasAsignadas.Count;
+                var maxVisible = 10;
+                var extras = totalCitas - maxVisible;
+
+                for (int i = 0; i < Math.Min(maxVisible, totalCitas); i++)
+                {
+                    <span class="punto-cita"></span>
+                }
+
+                if (extras > 0)
+                {
+                    <span class="extra-citas">+@extras</span>
+                }
+            }
+        </div>
+    </div>
+}

@@ -82,10 +82,23 @@ public class HomeController : Controller
 
             datosCargados = true;
         }
+
+        ViewBag.Citas = Citas;
         ViewBag.Consultorios = ListaConsultorios;
         return View(ListaPaciente);
     }
 
+   public IActionResult Consultoriosfila()
+    {
+        var lista = ListaConsultorios; // O donde guardes tus datos
+        return PartialView("_Consultoriosfila", lista);
+    }
+
+    public IActionResult Citascola()
+    {
+        var citas = Citas; // O desde donde provengan
+        return PartialView("_Citascola", citas);
+    }
 
     public IActionResult MostrarConsultorio(int id)
     {
@@ -344,13 +357,11 @@ public class HomeController : Controller
         paciente.Citas.Add(nuevaCita);
         Console.WriteLine($"Nueva cita agendada: ID:{nuevaCita.IdCita}, Especialidad:{especialidad.Nombre}, Paciente:{idPaciente}");
         TempData["Mensaje"] = "Cita agendada exitosamente.";
-        fitnes1();
         return RedirectToAction("Sala");
     }
     //esta funcion solo lee las citas que hay y las asigna a cola o a una fila
     // falta validar que no pueda entrar en el tiempo estimado.
     //validar que la fila tenga consultorio asignado
-
 
     public IActionResult fitnes1()
     {
@@ -386,8 +397,6 @@ public class HomeController : Controller
         Console.WriteLine("✅ Proceso de asignación finalizado.");
         return Ok("Proceso de asignación completado.");
     }
-
-
 
     //esto solo asigna a la primer puerta que tenga menos tiempo 
     private bool AsignarConsultorioACita(Cita cita, List<Consultorios> consultorios)

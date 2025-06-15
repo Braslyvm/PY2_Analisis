@@ -1,8 +1,8 @@
-﻿@{
+﻿@using AGBACKEND
+@{
     ViewData["Title"] = "Sala de consultorios";
 }
 
-<!-- Bootstrap 4.3 CSS (al principio para que puedas sobreescribir luego) -->
 @section Styles {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
@@ -10,21 +10,19 @@
 
 
 <div class="imagen-fondo"></div>
-
-<nav class="navbar navbar-light navbar-expand-md " style="background-color: #5e97c0;">
-  <a class="navbar-brand" href="#">Consultorios</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav ml-auto">
+    <nav class="navbar navbar-light navbar-expand-md " style="background-color: #5e97c0;">
+        <a class="navbar-brand" href="#">Consultorios</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ml-auto">
         <form asp-controller="Home" asp-action="CrearConsultorio" method="post" class="form-inline mb-0">
-  <button type="submit" id="Botton-CrearConsultorio" class="nav-item nav-link" style="background:none; border:none; padding:0; cursor:pointer;">
-    Crear consultorio
-  </button>
-</form>
+            <button type="submit" id="Botton-CrearConsultorio" class="nav-item nav-link" style="background:none; border:none; padding:0; cursor:pointer;">
+                Crear consultorio
+            </button>
+        </form>
         <a class="nav-item nav-link" id="botton-Paciente">Agregar paciente</a>
         <a class="nav-item nav-link" id="botton-Especialidad">Agregar especialidad</a>
         <a class="nav-item nav-link" id="botton-consultorio">Ver consultorio</a>
@@ -32,29 +30,19 @@
     </div>
   </div>
 </nav>
+
 <div class="Contenedor-Consultorios">
-    @foreach (var consultorio in ViewBag.Consultorios){
-        <div class="consultorio-wrapper">
-            <button class="btn-fila" type="button" data-id="@consultorio.IdConsultorio">Ver fila </button>
-            @if (consultorio.EstadoConsultorio == true)
-            {
-                <img src="/Imagenes/Abierto.jpg" alt="Consultorio Abierto" data-id="@consultorio.IdConsultorio" />
-            }
-            else
-            {
-                <img src="/Imagenes/cerrado.jpg" alt="Consultorio Cerrado" data-id="@consultorio.IdConsultorio" />
-            }
-            <div class="fila-citas">
-                @if (consultorio.CitasAsignadas != null)
-                {
-                    foreach (var cita in consultorio.CitasAsignadas)
-                    {
-                        <span class="punto-cita" title="Paciente ID: @cita.IdPaciente"></span>
-                    }
-                }
-            </div>
-        </div>
-    }
+    @await Html.PartialAsync("_Consultoriosfila", ViewBag.Consultorios as List<Consultorios> ?? new List<Consultorios>())
+</div>
+
+<div class="Contenedor-bajo">
+    <div class="Contenedor-cola">
+        @await Html.PartialAsync("_Citascola", (List<Cita>)ViewBag.Citas)
+    </div>
+    <button class="btn-cuadrado">
+        <img src="https://cdn-icons-png.flaticon.com/128/17400/17400193.png" alt="icono" />
+    </button>
+    <button class="btn-cuadrado" type="button">Ver fila</button>
 </div>
 
 <div id="modalContainer"></div>
@@ -67,6 +55,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script>
+        setInterval(function () {
+            $("#contenedor-consultorios").load("/Home/Consultoriosfila");
+        }, 1000);
+
+        // Recargar citas cada 5 segundos
+        setInterval(function () {
+            $("#contenedor-citas").load("/Home/Citascola");
+        }, 1000);
         toastr.options = {
         "positionClass": "toast-top-left"
         };
@@ -179,7 +175,6 @@
                     });
             });
         });
-
         document.querySelectorAll('.btn-fila').forEach(button => {
             button.addEventListener('click', () => {
             const id = button.dataset.id;

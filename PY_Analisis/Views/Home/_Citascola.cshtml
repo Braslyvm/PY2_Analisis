@@ -1,0 +1,17 @@
+@model List<Cita>
+
+<div class="cola-citas">
+    @if (Model != null){
+        var totalCitas = Model.Count;
+        var maxVisible = 37;
+        var extras = totalCitas - maxVisible;
+        for (int i = 0; i < Math.Min(maxVisible, totalCitas); i++){
+            <span class="punto-cola"></span>
+        }
+        if (extras > 0) {
+            <span class="extra-cola">Hay @extras citas mas</span>
+        }
+    }
+</div>
+
+
