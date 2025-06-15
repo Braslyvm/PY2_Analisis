@@ -16,7 +16,7 @@ public class HomeController : Controller
     public static List<Cita> Citas { get; set; } = new List<Cita>();  //objeto citas 
 
     public static List<Cita> ColaCitas { get; set; } = new List<Cita>(); //citas procesadas sin consultorio 
-    private static System.Timers.Timer? _timer; //deleay para llamadas a fitnes
+   private static System.Timers.Timer? _timer; //deleay para llamadas a fitnes
     public static bool Ramdon { get; set; } = false;
     List<Cita> citasPrioritariaslist = new List<Cita>();//lista uxiliar para dar prioridad cuando se cierra o abre consultorio
 
@@ -25,26 +25,25 @@ public class HomeController : Controller
     {
         return View();
     }
-    public HomeController()
+    
+    public void Cronometro(double milisegundos)
     {
-        if (_timer == null)
+        if (_timer != null)
         {
-            _timer = new System.Timers.Timer(10000); // 10 segundos
-            _timer.Elapsed += TimerElapsed;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
+            _timer.Stop();
+            _timer.Dispose();
         }
-    }
 
-    private void TimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
-    {
-        try{
-           // fitnes1();
-        }
-        catch (Exception ex)
+        _timer = new System.Timers.Timer(milisegundos); // por ejemplo 5000 = 5 segundos
+        _timer.Elapsed += (sender, e) =>
         {
-            TempData["Error"] = $"Error en TimerElapsed: {ex.Message}";
-        }
+            _timer.Stop();
+            _timer.Dispose();
+            _timer = null;
+
+        };
+        _timer.AutoReset = false;
+        _timer.Enabled = true;
     }
     public async Task<IActionResult> Sala()
     {
@@ -357,7 +356,7 @@ public class HomeController : Controller
         Console.WriteLine($"Nueva cita agendada: ID:{nuevaCita.IdCita}, Especialidad:{especialidad.Nombre}, Paciente:{idPaciente}");
         TempData["Mensaje"] = "Cita agendada exitosamente.";
         ColaCitas.Add(nuevaCita);
-        ReacomodarColas();
+       
         return RedirectToAction("Sala");
     }
     private bool Fitnes(Cita cita, List<Consultorios> consultorios)
@@ -393,17 +392,29 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
 
-    private void ReacomodarColas()
+    public void ReacomodarColas()
     {
+        var citasAsignadas = new List<Cita>();
+
         var citasPrioritarias = ColaCitas.OrderBy(c => c.IdCita).ToList();
         foreach (var cita in citasPrioritarias)
         {
             if (Fitnes(cita, ListaConsultorios))
             {
-                ColaCitas.Remove(cita);
+                citasAsignadas.Add(cita); // Guardamos para eliminar después
             }
         }
+
+        foreach (var cita in citasAsignadas)
+        {
+            ColaCitas.Remove(cita);
+            
+        }
+        Console.WriteLine("Contenido actual de la ColaCitas:");  
     }
+
+     
+
 
 }
 
