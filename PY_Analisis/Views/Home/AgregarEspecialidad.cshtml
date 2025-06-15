@@ -3,14 +3,18 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Agregar Especialidad </h2>
-         <form id="formularioEspecialidad" action="/Home/AgregarEspecialidad" method="post">
-            <label>Nombre:</label>
-            <input type="text" name="nombre" required /><br />
-
-            <label>Duración (hh:mm:ss):</label>
-            <input type="text" name="duracion" placeholder="00:30:00" required /><br />
-
-            <button type="submit">Guardar</button>
-        </form>
+        <div class="vista">
+            <form id="formularioEspecialidad" action="/Home/AgregarEspecialidad" method="post">
+                <div class="campo">
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" required /><br />
+                </div>
+                <div class="campo">
+                    <label>Duración (hh:mm:ss):</label>
+                    <input type="text" name="duracion" placeholder="00:30:00" required /><br />
+                </div>
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
     </div>
 </div>
