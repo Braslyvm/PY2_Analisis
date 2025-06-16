@@ -11,6 +11,13 @@ public class Cita
     public Especialidad Especialidad { get; set; }
     public bool asignada{ get; set; }
     public int Nprioridad { get; set; }
+    public EstadoCita Estado { get; set; } = EstadoCita.EnEspera;
+
+    
+    
+    
+
+     
 
     public Cita(Especialidad especialidad, int idPaciente)
     {
@@ -20,8 +27,16 @@ public class Cita
         IdPaciente = idPaciente;
         asignada=false;
         Nprioridad=0;
+       Estado = EstadoCita.EnEspera;
+
       
     }
+    public enum EstadoCita
+        {
+            EnEspera,
+            Atendiendo,
+            Atendido
+        }
 
     public int ConsultarDuracion()
     {

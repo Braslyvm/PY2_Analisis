@@ -74,7 +74,7 @@ public class HomeController : Controller
         }
 
         // Crear citas para los primeros 20 pacientes
-        foreach (var paciente in ListaPaciente.Take(20))
+        foreach (var paciente in ListaPaciente.Take(30))
         {
             // Escoger una especialidad aleatoria
             var especialidad = ListaEspecialidad.OrderBy(e => rnd.Next()).FirstOrDefault();
@@ -365,9 +365,13 @@ public class HomeController : Controller
         }
 
 
-        if (Citas.Any(c => c.Especialidad.IdEspecialidad == idEspecialidad && c.IdPaciente == idPaciente))
+        if (Citas.Any(c =>
+        c.Especialidad.IdEspecialidad == idEspecialidad &&
+        c.IdPaciente == idPaciente &&
+        (c.Estado == Cita.EstadoCita.EnEspera || c.Estado == Cita.EstadoCita.Atendiendo)))
+
         {
-            TempData["Error"] = "El paciente ya tiene una cita asignada en esta especialidad.";
+            TempData["Error"] = "El paciente ya tiene una cita activa en esta especialidad.";
             return RedirectToAction("Sala");
         }
 
@@ -375,7 +379,6 @@ public class HomeController : Controller
         var nuevaCita = new Cita(especialidad, idPaciente);
         Citas.Add(nuevaCita);
         paciente.Citas.Add(nuevaCita);
-        Console.WriteLine($"Nueva cita agendada: ID:{nuevaCita.IdCita}, Especialidad:{especialidad.Nombre}, Paciente:{idPaciente}");
         TempData["Mensaje"] = "Cita agendada exitosamente.";
         ColaCitas.Add(nuevaCita);
        
@@ -384,34 +387,54 @@ public class HomeController : Controller
     // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
     //
  
-    public async void AtenderPaciente()
+   public async void AtenderPaciente()
+{
+    foreach (var consul in ListaConsultorios)
     {
-        foreach (var consul in ListaConsultorios)
+        if (!consul.Atendiendo && consul.CitasAsignadas.Any())
         {
-            if (!consul.Atendiendo && consul.CitasAsignadas.Any())
+            const int MAX_INTENTOS = 6;
+            int intentos = 0;
+
+            while (intentos < MAX_INTENTOS)
             {
-                consul.Atendiendo = true;
-                var cita = consul.CitasAsignadas.First();
+                if (intentos >= consul.CitasAsignadas.Count)
+                    break; // Ya no hay más citas que revisar
+
+                var cita = consul.CitasAsignadas[intentos];
                 var paciente = ListaPaciente.FirstOrDefault(p => p.IdPaciente == cita.IdPaciente);
 
-                if (paciente != null)
+                // Si el paciente no está siendo atendido, lo atendemos
+                if (paciente != null && paciente.Estado != Paciente.EstadoCita.Atendiendo)
                 {
+                    consul.Atendiendo = true;
                     paciente.Estado = Paciente.EstadoCita.Atendiendo;
+                    cita.Estado = Cita.EstadoCita.Atendiendo;
 
+
+                    consul.Paciente = cita;
+                    consul.CitasAsignadas.Remove(cita);
 
                     _ = AtenderCitaAsync(consul, paciente, cita);
+                    break;
                 }
+
+                intentos++;
             }
         }
     }
+}
+
 
     private async Task AtenderCitaAsync(Consultorios consul, Paciente paciente, Cita cita)
     {
          Console.WriteLine($"Atendiendo paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
          consul.Paciente=cita;
         consul.CitasAsignadas.Remove(cita);
-        await Task.Delay(cita.Especialidad.Duracion * 1000); // esperar sin bloquear
+        await Task.Delay(cita.Especialidad.Duracion * 1000); 
         paciente.Estado = Paciente.EstadoCita.Atendido;
+        cita.Estado = Cita.EstadoCita.Atendido;
+
         consul.Atendiendo = false;
          Console.WriteLine($"atendido paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
        
@@ -496,11 +519,7 @@ public class HomeController : Controller
 
     MejorCola(citasPrioritarias, 100);
 
-    //Console.WriteLine("Contenido actual de la ColaCitas:");
-    foreach (var c in ColaCitas)
-    {
-        Console.WriteLine($"Cita {c.IdCita}, Prioridad {c.Nprioridad}, Paciente {c.IdPaciente}");
-    }
+    
 }
 
 
@@ -532,7 +551,7 @@ public class HomeController : Controller
         var duracionActual = CalcularDuracionGlobal(copiaConsultorios);
         tiemposSimulaciones.Add(duracionActual); // Guardar la duración
 
-       // Console.WriteLine($"Intento {intentos + 1}/{intentosMax}: duración total = {duracionActual}");
+       
 
         if (duracionActual < mejorDuracion)
         {
@@ -542,13 +561,7 @@ public class HomeController : Controller
         }
     }
 
-    // Mostrar resumen de todas las simulaciones al final
-    //Console.WriteLine("\nResumen de todas las simulaciones:");
-    //for (int i = 0; i < tiemposSimulaciones.Count; i++)
-  //  {
-        //Console.WriteLine($"Simulación {i + 1}: duración = {tiemposSimulaciones[i]}");
-   // }
-
+    
     // Aplicar la mejor solución sobre los consultorios reales
     foreach (var cita in mejorAsignacion)
     {
