@@ -191,6 +191,13 @@ public class HomeController : Controller
     {
         return PartialView("AgregarEspecialidad");
     }
+
+      public IActionResult verCola()
+    {
+        ViewBag.Pacientes = ListaPaciente;
+        ViewBag.citas = ColaCitas;
+        return PartialView("vercola");
+    }
     public IActionResult consultorio()
     {
         return PartialView("consultorio", ListaConsultorios);

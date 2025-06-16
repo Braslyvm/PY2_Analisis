@@ -1,0 +1,34 @@
+@using AGBACKEND
+@{
+    var pacientes = ViewBag.Pacientes as List<Paciente>;
+    var citas = ViewBag.citas as List<Cita>;
+}
+<div id="modalcolas" class="modal-Consultorio">
+    <div class="modal-content-Consultorio">
+        <span class="close">&times;</span>
+        <h2>Citas en cola</h2>
+        <div class="modal-scroll">
+            <h3>Pacientes en fila</h3>
+
+            @if (citas == null || !citas.Any())
+            {
+                <p>No hay pacientes en espera.</p>
+            }
+            else
+            {
+                <div class="contenedor-filas-pacientes">
+                    @foreach (var cita in citas)
+                    {
+                        var paciente = pacientes?.FirstOrDefault(p => p.IdPaciente == cita.IdPaciente);
+                        <div class="consultorio-card">
+                            <p class="paciente-nombre">
+                                @((paciente != null) ? paciente.Nombre + " " + paciente.Apellido : "Paciente no encontrado")
+                            </p>
+                            <p class="paciente-especialidad">Especialidad: @cita.Especialidad?.Nombre</p>
+                            <p class="paciente-duracion">Duración: @cita.Especialidad?.Duracion min</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
