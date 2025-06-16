@@ -7,8 +7,21 @@
 <div id="Cola-fila" class="modal-Consultorio">
     <div class="modal-content-Consultorio">
         <span class="close">&times;</span>
-        <h2>Consultorio @Model.IdConsultorio</h2>
-
+        <h2>Consultorio @Model.IdConsultorio espera: @Model.Duracion</h2>
+        <div class="modal-scroll">
+            <h3>Paciente siendo atendido</h3>
+            @if(Model.Atendiendo == true){
+                var paciente = pacientes?.FirstOrDefault(p => p.IdPaciente == Model.Paciente.IdPaciente);
+                        <div class="consultorio-card">
+                            <p class="paciente-nombre">@((paciente != null) ? paciente.Nombre + " " + paciente.Apellido : "Paciente no encontrado")</p>
+                            <p class="paciente-especialidad">Especialidad: @Model.Paciente.Especialidad?.Nombre</p>
+                            <p class="paciente-duracion">Duración: @Model.Paciente.Especialidad?.Duracion min</p>
+                        </div>
+            }
+            else{
+                <p> Nadie esta siendo atendido</p>
+            }
+        </div>
         <div class="modal-scroll">
             <h3>Pacientes en fila</h3>
 
