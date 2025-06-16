@@ -31,12 +31,11 @@
   </div>
 </nav>
 
-<div class="Contenedor-Consultorios">
+<div id="contenedor-consultorios" class="Contenedor-Consultorios">
     @await Html.PartialAsync("_Consultoriosfila", ViewBag.Consultorios as List<Consultorios> ?? new List<Consultorios>())
 </div>
-
 <div class="Contenedor-bajo">
-    <div class="Contenedor-cola">
+    <div id="contenedor-citas"  class="Contenedor-cola">
         @await Html.PartialAsync("_Citascola", (List<Cita>)ViewBag.ColaCitas)
     </div>
     <button class="btn-cuadrado">
@@ -78,8 +77,13 @@
             });
         }
 
-        setInterval(recargarConsultorios, 1);
-        setInterval(recargarCitas, 1);
+        setInterval(() => {
+        const modalAbierto = document.querySelector('.modal-Consultorio[style*="display: block"]');
+        if (!modalAbierto) {
+        recargarConsultorios();
+    }
+}, 1000);
+        setInterval(recargarCitas, 1000);
 
         toastr.options = {
         "positionClass": "toast-top-left"
@@ -173,46 +177,59 @@
                 });
         });
 
+       document.addEventListener('click', function (event) {
+            const img = event.target.closest('img[data-id]');
+            if (!img) return;
 
-        document.querySelectorAll('img[data-id]').forEach(img => {
-            img.addEventListener('click', function () {
-                const id = this.dataset.id;
-                fetch(`/Home/MostrarConsultorio?id=${id}`)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById("modalContainer").innerHTML = html;
+            const id = img.dataset.id;
+            fetch(`/Home/MostrarConsultorio?id=${id}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("modalContainer").innerHTML = html;
 
-                        const modal = document.getElementById("modalEstadosConsultorios");
-                        modal.style.display = "block";
+                    const modal = document.getElementById("modalEstadosConsultorios");
+                    if (!modal) return;
 
-                        modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                    modal.style.display = "block";
 
-                        window.addEventListener("click", event => {
-                            if (event.target === modal) modal.style.display = "none";
-                        });
-                    });
-            });
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+
+                    function outsideClickListener(event) {
+                        if (event.target === modal) {
+                            modal.style.display = "none";
+                            window.removeEventListener('click', outsideClickListener);
+                        }
+                    }
+                    window.addEventListener("click", outsideClickListener);
+                });
         });
-        document.querySelectorAll('.btn-fila').forEach(button => {
-            button.addEventListener('click', () => {
+
+        document.addEventListener('click', function(event) {
+            const button = event.target.closest('.btn-fila');
+            if (!button) return;
             const id = button.dataset.id;
             fetch(`/Home/MostrarFilas?id=${id}`)
                 .then(response => response.text())
                 .then(html => {
-                document.getElementById("modalContainer").innerHTML = html;
-                const modal = document.getElementById("Cola-fila");
-                if (!modal) {
-                    console.error("No se encontró el modal con id 'modalCitas'");
-                    return;
-                }
-                modal.style.display = "block";
-                modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
-                window.addEventListener("click", event => {
-                    if (event.target === modal) modal.style.display = "none";
-                });
+                    document.getElementById("modalContainer").innerHTML = html;
+                    const modal = document.getElementById("Cola-fila");
+                    if (!modal) {
+                        console.error("No se encontró el modal con id 'Cola-fila'");
+                        return;
+                    }
+                    modal.style.display = "block";
+
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+
+                    function outsideClickListener(event) {
+                        if (event.target === modal) {
+                            modal.style.display = "none";
+                            window.removeEventListener('click', outsideClickListener);
+                        }
+                    }
+                    window.addEventListener("click", outsideClickListener);
                 })
                 .catch(e => console.error("Error al cargar la fila:", e));
-            });
         });
     </script>
 }

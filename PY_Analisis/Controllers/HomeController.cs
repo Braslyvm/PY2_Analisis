@@ -12,7 +12,7 @@ public class HomeController : Controller
 {
     public static List<Paciente> ListaPaciente { get; set; } = new List<Paciente>();
     public static List<Especialidad> ListaEspecialidad { get; set; } = new List<Especialidad>();
-    public static List<Consultorios>  { get; set; } = new List<Consultorios>();
+    public static List<Consultorios> ListaConsultorios { get; set; } = new List<Consultorios>();
     public static List<Cita> Citas { get; set; } = new List<Cita>();  //objeto citas 
 
     public static List<Cita> ColaCitas { get; set; } = new List<Cita>(); //citas procesadas sin consultorio 
@@ -22,12 +22,16 @@ public class HomeController : Controller
 
     private static bool datosCargados = false;
     public IActionResult Index()
-        {if (_timer == null)
+    
+        { if (_timer == null)
         {
+           
             _timer = new System.Timers.Timer(5000); // 5 segundos
             _timer.Elapsed += (sender, e) => AtenderPaciente();
             _timer.AutoReset = true;
             _timer.Enabled = true;
+            
+            
         }
 
         return View();
@@ -68,7 +72,7 @@ public class HomeController : Controller
                 var cita2 = new Cita(especialidad2, paciente2.IdPaciente);
                 consultorio.AgregarCita(cita2);
                 paciente2.Citas.Add(cita2);
-            }ListaConsultorios
+            }
 
             datosCargados = true;
         }
@@ -404,8 +408,9 @@ public class HomeController : Controller
         Console.WriteLine("Contenido actual de la ColaCitas:");  
     }
 
-     // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
-     //
+    // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
+    //
+
     public async void AtenderPaciente()
     {
         foreach (var consul in ListaConsultorios)
@@ -419,8 +424,8 @@ public class HomeController : Controller
                 if (paciente != null)
                 {
                     paciente.Estado = Paciente.EstadoCita.Atendiendo;
-                  
-                  
+
+
                     _ = AtenderCitaAsync(consul, paciente, cita);
                 }
             }
@@ -438,6 +443,7 @@ public class HomeController : Controller
          Console.WriteLine($"atendido paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
        
     }
+
 
 }
 
