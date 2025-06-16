@@ -7,9 +7,7 @@ using PY_Analisis.Models;
 
 namespace AGBACKEND;
 
-    /// <summary>
-    ///
-    /// </summary>
+    
    public class Consultorios
 {
     private static int lastID = 0;
@@ -20,6 +18,8 @@ namespace AGBACKEND;
     public List<Cita> CitasAsignadas { get; set; }
     public int Duracion { get; set; }
     public bool Atendiendo{ get; set; }
+    public Cita Paciente { get; set; }
+
     public Consultorios()
     {
         lastID++;
@@ -30,6 +30,8 @@ namespace AGBACKEND;
         CitasAsignadas = new List<Cita>();
         Duracion = 0;
         Atendiendo=false;
+        Paciente = null;
+
     }
 
     public void ContarDuracion()

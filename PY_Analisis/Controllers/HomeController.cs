@@ -430,6 +430,7 @@ public class HomeController : Controller
     private async Task AtenderCitaAsync(Consultorios consul, Paciente paciente, Cita cita)
     {
          Console.WriteLine($"Atendiendo paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
+         consul.Paciente=cita;
         consul.CitasAsignadas.Remove(cita);
         await Task.Delay(cita.Especialidad.Duracion * 1000); // esperar sin bloquear
         paciente.Estado = Paciente.EstadoCita.Atendido;
