@@ -25,12 +25,12 @@ public class HomeController : Controller
     
         { if (_timer == null)
         {
-           /*
+           
             _timer = new System.Timers.Timer(5000); // 5 segundos
             _timer.Elapsed += (sender, e) => AtenderPaciente();
             _timer.AutoReset = true;
             _timer.Enabled = true;
-            */
+            
             
         }
 
@@ -42,45 +42,65 @@ public class HomeController : Controller
     await Task.Delay(milisegundos); 
     return true;
 }
-    public async Task<IActionResult> Sala()
+   public async Task<IActionResult> Sala()
+{
+    if (!datosCargados)
     {
-        if (!datosCargados)
+        await CargarPaciente();
+        await CargarEspecialidad();
+
+        var rnd = new Random();
+
+        // Crear múltiples consultorios con especialidades aleatorias
+        for (int i = 0; i < 5; i++) // Crea 5 consultorios
         {
-            await CargarPaciente();
-            await CargarEspecialidad();
-            // borrrar Pruebas 
             var consultorio = new Consultorios();
-            consultorio.RegistrarEspecialidad(1);
-            consultorio.RegistrarEspecialidad(2);
-            ListaConsultorios.Add(consultorio);
+
+            // Escoge entre 1 y todas las especialidades aleatorias
+            var numEspecialidades = rnd.Next(1, ListaEspecialidad.Count + 1);
+            var especialidadesAleatorias = ListaEspecialidad
+                .OrderBy(e => rnd.Next())
+                .Take(numEspecialidades)
+                .ToList();
+
+            // Registrar esas especialidades en el consultorio
+            foreach (var esp in especialidadesAleatorias)
+            {
+                consultorio.RegistrarEspecialidad(esp.IdEspecialidad);
+            }
+
             consultorio.AbrirConsultorio();
-
-            var paciente1 = ListaPaciente.FirstOrDefault();
-            var paciente2 = ListaPaciente.Skip(1).FirstOrDefault();
-            var especialidad1 = ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == 1);
-            var especialidad2 = ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == 2);
-
-            if (paciente1 != null && especialidad1 != null)
-            {
-                var cita1 = new Cita(especialidad1, paciente1.IdPaciente);
-                consultorio.AgregarCita(cita1);
-                paciente1.Citas.Add(cita1);
-            }
-
-            if (paciente2 != null && especialidad2 != null)
-            {
-                var cita2 = new Cita(especialidad2, paciente2.IdPaciente);
-                consultorio.AgregarCita(cita2);
-                paciente2.Citas.Add(cita2);
-            }
-
-            datosCargados = true;
+            ListaConsultorios.Add(consultorio);
         }
-        ViewBag.Ramdon = Ramdon;    
-        ViewBag.ColaCitas = ColaCitas;
-        ViewBag.Consultorios = ListaConsultorios;
-        return View(ListaPaciente);
+
+        // Crear citas para los primeros 20 pacientes
+        foreach (var paciente in ListaPaciente.Take(20))
+        {
+            // Escoger una especialidad aleatoria
+            var especialidad = ListaEspecialidad.OrderBy(e => rnd.Next()).FirstOrDefault();
+            if (especialidad != null)
+            {
+                var cita = new Cita(especialidad, paciente.IdPaciente)
+                {
+                    Nprioridad = rnd.Next(1, 4) // Nivel de prioridad aleatorio
+                };
+
+                // Registrar cita en la cola y en el paciente
+                ColaCitas.Add(cita);
+                paciente.Citas.Add(cita);
+            }
+        }
+
+        datosCargados = true;
     }
+
+    ViewBag.Ramdon = Ramdon;
+    ViewBag.ColaCitas = ColaCitas;
+    ViewBag.Consultorios = ListaConsultorios;
+
+    return View(ListaPaciente);
+}
+
 
    [HttpGet]
     public IActionResult Consultoriosfila()
@@ -356,7 +376,7 @@ public class HomeController : Controller
     }
     // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
     //
- /*
+ 
     public async void AtenderPaciente()
     {
         foreach (var consul in ListaConsultorios)
@@ -393,7 +413,7 @@ public class HomeController : Controller
 
 
 
-*/
+
 
 
     private bool Fitnes(Cita cita, List<Consultorios> consultorios)
@@ -469,7 +489,7 @@ public class HomeController : Controller
 
     MejorCola(citasPrioritarias, 100);
 
-    Console.WriteLine("Contenido actual de la ColaCitas:");
+    //Console.WriteLine("Contenido actual de la ColaCitas:");
     foreach (var c in ColaCitas)
     {
         Console.WriteLine($"Cita {c.IdCita}, Prioridad {c.Nprioridad}, Paciente {c.IdPaciente}");
@@ -505,7 +525,7 @@ public class HomeController : Controller
         var duracionActual = CalcularDuracionGlobal(copiaConsultorios);
         tiemposSimulaciones.Add(duracionActual); // Guardar la duración
 
-        Console.WriteLine($"Intento {intentos + 1}/{intentosMax}: duración total = {duracionActual}");
+       // Console.WriteLine($"Intento {intentos + 1}/{intentosMax}: duración total = {duracionActual}");
 
         if (duracionActual < mejorDuracion)
         {
@@ -516,11 +536,11 @@ public class HomeController : Controller
     }
 
     // Mostrar resumen de todas las simulaciones al final
-    Console.WriteLine("\nResumen de todas las simulaciones:");
-    for (int i = 0; i < tiemposSimulaciones.Count; i++)
-    {
-        Console.WriteLine($"Simulación {i + 1}: duración = {tiemposSimulaciones[i]}");
-    }
+    //Console.WriteLine("\nResumen de todas las simulaciones:");
+    //for (int i = 0; i < tiemposSimulaciones.Count; i++)
+  //  {
+        //Console.WriteLine($"Simulación {i + 1}: duración = {tiemposSimulaciones[i]}");
+   // }
 
     // Aplicar la mejor solución sobre los consultorios reales
     foreach (var cita in mejorAsignacion)
