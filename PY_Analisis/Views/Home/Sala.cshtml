@@ -38,7 +38,7 @@
     <div id="contenedor-citas"  class="Contenedor-cola">
         @await Html.PartialAsync("_Citascola", (List<Cita>)ViewBag.ColaCitas)
     </div>
-    <button class="btn-cuadrado">
+    <button class="btn-cuadrado"id="botton-Vercola">
         <img src="https://cdn-icons-png.flaticon.com/128/17400/17400193.png" alt="icono" />
     </button>
     <form asp-controller="Home" asp-action="ReacomodarColasinterfas" method="post">
@@ -105,6 +105,21 @@
                 .then(html => {
                     document.getElementById("modalContainer").innerHTML = html;
                     const modal = document.getElementById("modalCitas");
+                    modal.style.display = "block";
+
+                    modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
+                    window.addEventListener("click", event => {
+                        if (event.target === modal) modal.style.display = "none";
+                    });
+                });
+        });
+
+        document.getElementById("botton-Vercola").addEventListener("click", function () {
+            fetch('/Home/verCola')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("modalContainer").innerHTML = html;
+                    const modal = document.getElementById("modalcolas");modalcolas
                     modal.style.display = "block";
 
                     modal.querySelector(".close").addEventListener("click", () => modal.style.display = "none");
