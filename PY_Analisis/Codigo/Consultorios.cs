@@ -18,7 +18,7 @@ namespace AGBACKEND;
     public List<Cita> CitasAsignadas { get; set; }
     public int Duracion { get; set; }
     public bool Atendiendo{ get; set; }
-    public Cita Paciente { get; set; }
+    public Cita? Paciente { get; set; }
 
     public Consultorios()
     {
@@ -53,10 +53,15 @@ namespace AGBACKEND;
             !IdEspecialidades.Contains(nuevaCita.Especialidad.IdEspecialidad))
             return false;
 
+        
+        if (CitasAsignadas.Contains(nuevaCita))
+            return false;
+
         CitasAsignadas.Add(nuevaCita);
         ContarDuracion();
         return true;
     }
+
 
         public bool CerrarConsultorio()
         {

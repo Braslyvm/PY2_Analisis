@@ -25,12 +25,12 @@ public class HomeController : Controller
     
         { if (_timer == null)
         {
-           
+           /*
             _timer = new System.Timers.Timer(5000); // 5 segundos
             _timer.Elapsed += (sender, e) => AtenderPaciente();
             _timer.AutoReset = true;
             _timer.Enabled = true;
-            
+            */
             
         }
 
@@ -354,63 +354,9 @@ public class HomeController : Controller
        
         return RedirectToAction("Sala");
     }
-    private bool Fitnes(Cita cita, List<Consultorios> consultorios)
-    {
-        var disponibles = consultorios
-            .Where(c => c.EstadoConsultorio &&
-                        c.IdEspecialidades.Contains(cita.Especialidad.IdEspecialidad))
-            .OrderBy(c => c.Duracion)
-            .ToList();
-
-        if (disponibles.Any())
-        {
-            var mejor = disponibles.First();
-            return mejor.AgregarCita(cita);
-        }
-
-        return false;
-    }
-
-  
-    public void ReacomodarCitas(List<Cita> citasPrioritarias)
-    {
-        citasPrioritarias = citasPrioritarias.OrderBy(c => c.IdCita).ToList();
-        foreach (var cita in citasPrioritarias)
-        {
-            Fitnes(cita, ListaConsultorios);
-        }
-    }
-    [HttpPost]
-    public IActionResult ReacomodarColasinterfas()
-    {
-        ReacomodarColas();
-        return RedirectToAction("Sala");
-    }
-
-    public void ReacomodarColas()
-    {
-        var citasAsignadas = new List<Cita>();
-
-        var citasPrioritarias = ColaCitas.OrderBy(c => c.IdCita).ToList();
-        foreach (var cita in citasPrioritarias)
-        {
-            if (Fitnes(cita, ListaConsultorios))
-            {
-                citasAsignadas.Add(cita); // Guardamos para eliminar después
-            }
-        }
-
-        foreach (var cita in citasAsignadas)
-        {
-            ColaCitas.Remove(cita);
-            
-        }
-        Console.WriteLine("Contenido actual de la ColaCitas:");  
-    }
-
     // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
     //
-
+ /*
     public async void AtenderPaciente()
     {
         foreach (var consul in ListaConsultorios)
@@ -445,8 +391,196 @@ public class HomeController : Controller
     }
 
 
+
+
+*/
+
+
+    private bool Fitnes(Cita cita, List<Consultorios> consultorios)
+{
+    if (consultorios.Any(c => c.Paciente == cita || c.CitasAsignadas.Contains(cita)))
+        return false;
+
+    var disponibles = consultorios
+        .Where(c => c.EstadoConsultorio &&
+                    c.IdEspecialidades.Contains(cita.Especialidad.IdEspecialidad))
+        .OrderBy(c => c.Duracion)
+        .ToList();
+
+    if (disponibles.Any())
+    {
+        var mejor = disponibles.First();
+        return mejor.AgregarCita(cita);
+    }
+
+    return false;
 }
 
+  
+  public void ReacomodarCitas(List<Cita> citasPrioritarias)
+{
+    // Resetear los consultorios pero conservar los que están atendiendo
+    foreach (var consultorio in ListaConsultorios)
+    {
+        var citaActual = consultorio.Paciente;
+
+        consultorio.CitasAsignadas.Clear();
+        consultorio.Duracion = 0;
+
+        if (consultorio.Atendiendo && citaActual != null)
+        {
+            // Reasignar la cita actual al consultorio
+          
+            consultorio.Duracion = citaActual.Especialidad.Duracion;
+        }
+        else
+        {
+            consultorio.Atendiendo = false;
+            consultorio.Paciente = null;
+        }
+    }
+
+    // Filtrar citas que no están siendo atendidas actualmente
+    var citasParaReasignar = citasPrioritarias
+        .Where(c => !ListaConsultorios.Any(con => con.Paciente == c))
+        .OrderBy(c => c.Nprioridad)
+        .ThenBy(c => c.Especialidad.Duracion)
+        .ToList();
+
+    MejorCola(citasParaReasignar, 100);
+}
+
+
+
+    [HttpPost]
+    public IActionResult ReacomodarColasinterfas()
+    {
+        ReacomodarColas();
+        return RedirectToAction("Sala");
+    }
+
+
+   public void ReacomodarColas()
+{
+    var citasPrioritarias = ColaCitas
+        .OrderBy(c => c.Nprioridad)
+        .ThenBy(c => c.IdCita)
+        .ToList();
+
+    MejorCola(citasPrioritarias, 100);
+
+    Console.WriteLine("Contenido actual de la ColaCitas:");
+    foreach (var c in ColaCitas)
+    {
+        Console.WriteLine($"Cita {c.IdCita}, Prioridad {c.Nprioridad}, Paciente {c.IdPaciente}");
+    }
+}
+
+
+
+  public void MejorCola(List<Cita> colaOriginal, int intentosMax)
+{
+    var mejorCola = new List<Cita>(colaOriginal);
+    var mejorDuracion = int.MaxValue;
+    var mejorAsignacion = new List<Cita>();
+
+    var tiemposSimulaciones = new List<int>(); // Para guardar todas las duraciones
+
+    for (int intentos = 0; intentos < intentosMax; intentos++)
+    {
+        var colaSimulada = colaOriginal.OrderBy(c => Guid.NewGuid()).ToList();
+        var copiaConsultorios = ClonarConsultorios(ListaConsultorios);
+
+        var citasAsignadas = new List<Cita>();
+
+        foreach (var cita in colaSimulada)
+        {
+            if (copiaConsultorios.Any(c => c.CitasAsignadas.Contains(cita)))
+                continue;
+
+            if (Fitnes(cita, copiaConsultorios))
+                citasAsignadas.Add(cita);
+        }
+
+        var duracionActual = CalcularDuracionGlobal(copiaConsultorios);
+        tiemposSimulaciones.Add(duracionActual); // Guardar la duración
+
+        Console.WriteLine($"Intento {intentos + 1}/{intentosMax}: duración total = {duracionActual}");
+
+        if (duracionActual < mejorDuracion)
+        {
+            mejorDuracion = duracionActual;
+            mejorCola = colaSimulada;
+            mejorAsignacion = new List<Cita>(citasAsignadas);
+        }
+    }
+
+    // Mostrar resumen de todas las simulaciones al final
+    Console.WriteLine("\nResumen de todas las simulaciones:");
+    for (int i = 0; i < tiemposSimulaciones.Count; i++)
+    {
+        Console.WriteLine($"Simulación {i + 1}: duración = {tiemposSimulaciones[i]}");
+    }
+
+    // Aplicar la mejor solución sobre los consultorios reales
+    foreach (var cita in mejorAsignacion)
+    {
+        if (ListaConsultorios.Any(c => c.Paciente == cita))
+            continue;
+
+        Fitnes(cita, ListaConsultorios);
+        ColaCitas.Remove(cita);
+    }
+
+    var noAsignadas = mejorCola.Except(mejorAsignacion).ToList();
+
+    foreach (var cita in noAsignadas)
+    {
+        if (!ColaCitas.Contains(cita))
+        {
+            cita.Nprioridad++;
+            ColaCitas.Add(cita);
+        }
+    }
+}
+
+
+
+    // codigo no mios
+    private int CalcularDuracionGlobal(List<Consultorios> consultorios)
+    {
+        int total = consultorios.Sum(c => c.Duracion);
+        double promedio = consultorios.Count > 0 ? (double)total / consultorios.Count : 0;
+
+        Console.WriteLine($"Promedio de duración por consultorio: {promedio}");
+
+        return total;
+    }
+
+
+    private List<Consultorios> ClonarConsultorios(List<Consultorios> originales)
+    {
+        var nuevos = new List<Consultorios>();
+
+        foreach (var c in originales)
+        {
+            var copia = new Consultorios
+            {
+                IdConsultorio = c.IdConsultorio,
+                EstadoConsultorio = c.EstadoConsultorio,
+                IdEspecialidades = new List<int>(c.IdEspecialidades),
+                CitasAsignadas = new List<Cita>(),
+                Atendiendo = false,
+                Duracion = 0,
+                Paciente = null
+            };
+
+            nuevos.Add(copia);
+        }
+
+        return nuevos;
+    }
+}
 
        
     

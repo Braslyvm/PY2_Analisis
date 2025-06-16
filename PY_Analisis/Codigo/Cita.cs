@@ -10,6 +10,7 @@ public class Cita
     public int IdPaciente { get; set; }
     public Especialidad Especialidad { get; set; }
     public bool asignada{ get; set; }
+    public int Nprioridad { get; set; }
 
     public Cita(Especialidad especialidad, int idPaciente)
     {
@@ -18,6 +19,7 @@ public class Cita
         Especialidad = especialidad;
         IdPaciente = idPaciente;
         asignada=false;
+        Nprioridad=0;
       
     }
 
