@@ -26,6 +26,7 @@ namespace AGBACKEND;
             Cedula= cedula;
             Atencion=false;
         }
+        /*change  the state of persons with apointment*/
         public enum EstadoCita
         {
             EnEspera,

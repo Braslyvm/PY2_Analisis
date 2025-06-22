@@ -33,7 +33,10 @@ namespace AGBACKEND;
         Paciente = null;
 
     }
-
+      /*
+         Recalculates the total duration of assigned appointments
+         that match the specialties of the consultory.
+         */
     public void ContarDuracion()
     {
         if (IdEspecialidades == null || !CitasAsignadas.Any())
@@ -46,7 +49,11 @@ namespace AGBACKEND;
             .Where(c => IdEspecialidades.Contains(c.Especialidad.IdEspecialidad))
             .Sum(c => c.Especialidad.Duracion);
     }
-
+       /*
+          Attempts to add a new appointment to this consultory.
+          The consultory must be open and support the specialty of the appointment.
+          
+         */
     public bool AgregarCita(Cita nuevaCita)
     {
         if (!EstadoConsultorio || IdEspecialidades == null || 
@@ -62,7 +69,7 @@ namespace AGBACKEND;
         return true;
     }
 
-
+        /*Attempts to close the consultory if more than one consultory remains open.*/
         public bool CerrarConsultorio()
         {
             if (ConsultoriosOpen > 1 && EstadoConsultorio)
@@ -76,7 +83,7 @@ namespace AGBACKEND;
                 return false;
             }
         }
-
+        /*Attempts to open the consultory if it is currently closed.*/
         public bool AbrirConsultorio()
         {
             if (ConsultoriosOpen >= 1 && !EstadoConsultorio)
@@ -90,7 +97,8 @@ namespace AGBACKEND;
                 return false;
             }
         }
-
+        
+        /* Registers a new specialty to the consultory if not already present.*/
         public bool RegistrarEspecialidad(int IdEspecialidad)
         {
             if (!IdEspecialidades.Contains(IdEspecialidad))
@@ -101,7 +109,8 @@ namespace AGBACKEND;
 
             return false;
         }
-
+         /**
+         * Removes a specialty from the consultory if it exists.*/
         public bool EliminarEspecialidad(int IdEspecialidad)
         {
             if (IdEspecialidades.Contains(IdEspecialidad))

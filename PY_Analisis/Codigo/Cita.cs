@@ -13,12 +13,6 @@ public class Cita
     public int Nprioridad { get; set; }
     public EstadoCita Estado { get; set; } = EstadoCita.EnEspera;
 
-    
-    
-    
-
-     
-
     public Cita(Especialidad especialidad, int idPaciente)
     {
         lastIdCita++;
@@ -30,14 +24,14 @@ public class Cita
        Estado = EstadoCita.EnEspera;
 
       
-    }
+    }/* change the state of apointment*/
     public enum EstadoCita
         {
             EnEspera,
             Atendiendo,
             Atendido
         }
-
+    /* returns the time of specility*/
     public int ConsultarDuracion()
     {
         return Especialidad.Duracion;

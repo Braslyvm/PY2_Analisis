@@ -7,7 +7,7 @@ using PY_Analisis.Models;
 using AGBACKEND;
 
 namespace PY_Analisis.Controllers;
-
+ 
 public class HomeController : Controller
 {
     public static List<Paciente> ListaPaciente { get; set; } = new List<Paciente>();
@@ -42,83 +42,69 @@ public class HomeController : Controller
     await Task.Delay(milisegundos); 
     return true;
 }
+ /* This function initializes example data by loading JSON files into the object lists */
+
    public async Task<IActionResult> Sala()
-{
-    if (!datosCargados)
     {
-        await CargarPaciente();
-        await CargarEspecialidad();
-
-        var rnd = new Random();
-
-        // Crear múltiples consultorios con especialidades aleatorias
-        for (int i = 0; i < 5; i++) // Crea 5 consultorios
+        if (!datosCargados)
         {
+            await CargarPaciente();
+            await CargarEspecialidad();
+            // borrrar Pruebas 
             var consultorio = new Consultorios();
-
-            // Escoge entre 1 y todas las especialidades aleatorias
-            var numEspecialidades = rnd.Next(1, ListaEspecialidad.Count + 1);
-            var especialidadesAleatorias = ListaEspecialidad
-                .OrderBy(e => rnd.Next())
-                .Take(numEspecialidades)
-                .ToList();
-
-            // Registrar esas especialidades en el consultorio
-            foreach (var esp in especialidadesAleatorias)
-            {
-                consultorio.RegistrarEspecialidad(esp.IdEspecialidad);
-            }
-
-            consultorio.AbrirConsultorio();
+            consultorio.RegistrarEspecialidad(1);
+            consultorio.RegistrarEspecialidad(2);
             ListaConsultorios.Add(consultorio);
-        }
+            consultorio.AbrirConsultorio();
 
-        // Crear citas para los primeros 20 pacientes
-        foreach (var paciente in ListaPaciente.Take(30))
-        {
-            // Escoger una especialidad aleatoria
-            var especialidad = ListaEspecialidad.OrderBy(e => rnd.Next()).FirstOrDefault();
-            if (especialidad != null)
+            var paciente1 = ListaPaciente.FirstOrDefault();
+            var paciente2 = ListaPaciente.Skip(1).FirstOrDefault();
+            var especialidad1 = ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == 1);
+            var especialidad2 = ListaEspecialidad.FirstOrDefault(e => e.IdEspecialidad == 2);
+
+            if (paciente1 != null && especialidad1 != null)
             {
-                var cita = new Cita(especialidad, paciente.IdPaciente)
-                {
-                    Nprioridad = rnd.Next(1, 4) // Nivel de prioridad aleatorio
-                };
-
-                // Registrar cita en la cola y en el paciente
-                ColaCitas.Add(cita);
-                paciente.Citas.Add(cita);
+                var cita1 = new Cita(especialidad1, paciente1.IdPaciente);
+                consultorio.AgregarCita(cita1);
+                paciente1.Citas.Add(cita1);
             }
+
+            if (paciente2 != null && especialidad2 != null)
+            {
+                var cita2 = new Cita(especialidad2, paciente2.IdPaciente);
+                consultorio.AgregarCita(cita2);
+                paciente2.Citas.Add(cita2);
+            }
+
+            datosCargados = true;
         }
+        ViewBag.Ramdon = Ramdon;    
+        ViewBag.ColaCitas = ColaCitas;
+        ViewBag.Consultorios = ListaConsultorios;
+        return View(ListaPaciente);
+    }
 
-        datosCargados = true;
-    }
-
-    ViewBag.Ramdon = Ramdon;
-    ViewBag.ColaCitas = ColaCitas;
-    ViewBag.Consultorios = ListaConsultorios;
-
-    return View(ListaPaciente);
-}
-
+    /* This function returns the view to the users  */
 
    [HttpGet]
     public IActionResult Consultoriosfila()
     {
         return PartialView("_Consultoriosfila", ListaConsultorios);
     }
+        /* This function returns the view to the users  */
 
     [HttpGet]
     public IActionResult Citascola()
     {
         return PartialView("_Citascola", ColaCitas);
     }
-
+        /* This function returns the lists of Medical office  */
     public IActionResult MostrarConsultorio(int id)
     {
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == id);
         return PartialView("EstadosConsultorios", consultorio);
     }
+     /* This function returns the lists of Medical office  */
     public IActionResult MostrarFilas(int id)
     {
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == id);
@@ -126,7 +112,7 @@ public class HomeController : Controller
         Console.WriteLine(id);
         return PartialView("Colafilas", consultorio);
     }
-
+ /* This function clouse the medical office*/
     [HttpPost]
     public IActionResult CerrarConsultorio(int IdConsultorio){
 
@@ -148,7 +134,7 @@ public class HomeController : Controller
         ReacomodarCitas(todasLasCitas);
         return RedirectToAction("Sala");
     }
-
+     /* This function open the  Medical office  */
     [HttpPost]
 
     public IActionResult AbrirConsultorio(int IdConsultorio)
@@ -170,10 +156,13 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
 
-    [HttpPost]
 
 
     [HttpPost]
+    /* This function adds a new specialty to the system.
+   It first checks if a patient with the same name exists to avoid conflicts (though this may be a logic mistake).
+   Then it creates the specialty with the given name and duration and adds it to the specialty list.
+   Finally, it redirects the user to the main room view. */
     public IActionResult AgregarEspecialidad(string nombre, int duracion)
     {
         if (ListaPaciente.Any(p => p.Nombre == nombre))
@@ -183,12 +172,14 @@ public class HomeController : Controller
 
         var nuevaEspecialidad = new Especialidad(nombre, duracion);
         ListaEspecialidad.Add(nuevaEspecialidad);
+       
 
         return RedirectToAction("Sala");
     }
 
 
     [HttpPost]
+    /* Adds a new patient to the list if the ID is not already registered */
     public IActionResult AgregarPacientes(string nombre, string apellido, int cedula)
     {
 
@@ -203,32 +194,38 @@ public class HomeController : Controller
     }
 
 
+    /* This function returns the view to the users  */
     public IActionResult AgregarPacientes()
     {
         return PartialView("AgregarPacientes");
     }
+    
+    /* This function returns the view to the users  */
     public IActionResult AgregarEspecialidad()
     {
         return PartialView("AgregarEspecialidad");
     }
-
+    /* Shows the current list of patients and appointment queue */
       public IActionResult verCola()
     {
         ViewBag.Pacientes = ListaPaciente;
         ViewBag.citas = ColaCitas;
         return PartialView("vercola");
     }
+    
+    /* This function returns the view to the users  */
     public IActionResult consultorio()
     {
         return PartialView("consultorio", ListaConsultorios);
     }
-
+    /* Load the list of patients from the JSON file */
     public async Task CargarPaciente()
     {
         string ruta = Path.Combine(Directory.GetCurrentDirectory(), "ArchivosJSON", "Pacientes.json");
         using FileStream leer = System.IO.File.OpenRead(ruta);
         ListaPaciente = await JsonSerializer.DeserializeAsync<List<Paciente>>(leer);
     }
+    /* Load the list of specialties from the JSON file */
     public async Task CargarEspecialidad()
     {
 
@@ -237,7 +234,7 @@ public class HomeController : Controller
         ListaEspecialidad = await JsonSerializer.DeserializeAsync<List<Especialidad>>(leer);
 
     }
-
+    /* Create a new consultorio if there is space available */
     public IActionResult CrearConsultorio()
     {
         if (ListaConsultorios.Count >= 15)
@@ -255,6 +252,8 @@ public class HomeController : Controller
 
         return RedirectToAction("Sala");
     }
+    /* Generate 5 consultorios with random specialties and add them to the list */
+
     public IActionResult RamdonConsultorios()
     {
         Ramdon = true ;
@@ -274,7 +273,7 @@ public class HomeController : Controller
 
         return RedirectToAction("Sala");
     }
-
+/* this funcition take the idConsultorio and idEspecialidad search the  Medical office and delete the Specialty */
     public IActionResult EliminarEspecialidadDeConsultorio(int idConsultorio, int idEspecialidad)
     {
         var consultorio = ListaConsultorios.FirstOrDefault(c => c.IdConsultorio == idConsultorio);
@@ -304,7 +303,8 @@ public class HomeController : Controller
 
         return RedirectToAction("Sala");
     }
-
+    /* this funcition take the idConsultorio and idEspecialidad search the  Medical office and insert the Specialty */
+ 
     [HttpPost]
     public IActionResult AgregarEspecialidadAConsultorio(int idConsultorio, int idEspecialidad)
     {
@@ -341,12 +341,13 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
 
-
+    
     public IActionResult AgendarCita()
     {
         return PartialView("AgendarCita", ListaPaciente);
     }
     [HttpPost]
+    /*this fuctiion takes the idPaciente and idEspeciadlidad and register the new  Schedule an appointment*/
     public IActionResult AgendarCita(int idPaciente, int idEspecialidad)
     {
         var paciente = ListaPaciente.FirstOrDefault(p => p.IdPaciente == idPaciente);
@@ -384,9 +385,9 @@ public class HomeController : Controller
        
         return RedirectToAction("Sala");
     }
-    // validar que se esta atendiendo. validar que el consultorio lo atienda, esperar la durascion cita
-    //
- 
+    /* Iterates through all consultorios (medical offices) and attempts to attend to the next available patient
+who is not currently being attended. Each consultorio will only attempt to attend one patient at a time.
+*/
    public async void AtenderPaciente()
 {
     foreach (var consul in ListaConsultorios)
@@ -425,10 +426,12 @@ public class HomeController : Controller
     }
 }
 
+     /*Simulates the process of attending a medical appointment. It delays for the duration of the appointment,
+    updates the state of the patient and the consultorio, and frees up the consultorio when done.*/
 
     private async Task AtenderCitaAsync(Consultorios consul, Paciente paciente, Cita cita)
     {
-         Console.WriteLine($"Atendiendo paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
+         
          consul.Paciente=cita;
         consul.CitasAsignadas.Remove(cita);
         await Task.Delay(cita.Especialidad.Duracion * 1000); 
@@ -436,16 +439,16 @@ public class HomeController : Controller
         cita.Estado = Cita.EstadoCita.Atendido;
 
         consul.Atendiendo = false;
-         Console.WriteLine($"atendido paciente {paciente.Nombre} en consultorio {consul.IdConsultorio}");
+         consul.ContarDuracion();
+        
        
     }
 
 
 
-
-
-
-
+/* This is the most important function. It selects the available medical office (consultorio)
+ with the minimum current total time (duration) that supports the specialty required by the appointment,
+  then attempts to assign the appointment using AgregarCita.*/
     private bool Fitnes(Cita cita, List<Consultorios> consultorios)
 {
     if (consultorios.Any(c => c.Paciente == cita || c.CitasAsignadas.Contains(cita)))
@@ -466,7 +469,11 @@ public class HomeController : Controller
     return false;
 }
 
-  
+  /**
+ Resets all consultorios, keeping only those currently attending a patient.
+  Clears all assigned appointments and reassigns unhandled priority appointments
+  based on priority and duration using the MejorCola function.
+ */
   public void ReacomodarCitas(List<Cita> citasPrioritarias)
 {
     // Resetear los consultorios pero conservar los que están atendiendo
@@ -490,7 +497,6 @@ public class HomeController : Controller
         }
     }
 
-    // Filtrar citas que no están siendo atendidas actualmente
     var citasParaReasignar = citasPrioritarias
         .Where(c => !ListaConsultorios.Any(con => con.Paciente == c))
         .OrderBy(c => c.Nprioridad)
@@ -509,7 +515,7 @@ public class HomeController : Controller
         return RedirectToAction("Sala");
     }
 
-
+    /*Sorts the global appointment queue (ColaCitas) by priority and ID, then reassigns the appointments using the MejorCola function.*/
    public void ReacomodarColas()
 {
     var citasPrioritarias = ColaCitas
@@ -521,22 +527,24 @@ public class HomeController : Controller
 
     
 }
-
-
+    /**
+    Tries multiple randomized permutations of the appointment queue to find the most optimal assignment
+    across consultorios (medical offices), minimizing total duration.
+    Applies the best configuration to the actual consultorios and increases the priority
+    of unassigned appointments for future consideration.
+ */
 
   public void MejorCola(List<Cita> colaOriginal, int intentosMax)
 {
     var mejorCola = new List<Cita>(colaOriginal);
     var mejorDuracion = int.MaxValue;
     var mejorAsignacion = new List<Cita>();
-
     var tiemposSimulaciones = new List<int>(); // Para guardar todas las duraciones
 
     for (int intentos = 0; intentos < intentosMax; intentos++)
     {
         var colaSimulada = colaOriginal.OrderBy(c => Guid.NewGuid()).ToList();
         var copiaConsultorios = ClonarConsultorios(ListaConsultorios);
-
         var citasAsignadas = new List<Cita>();
 
         foreach (var cita in colaSimulada)
@@ -547,12 +555,8 @@ public class HomeController : Controller
             if (Fitnes(cita, copiaConsultorios))
                 citasAsignadas.Add(cita);
         }
-
         var duracionActual = CalcularDuracionGlobal(copiaConsultorios);
         tiemposSimulaciones.Add(duracionActual); // Guardar la duración
-
-       
-
         if (duracionActual < mejorDuracion)
         {
             mejorDuracion = duracionActual;
@@ -583,21 +587,19 @@ public class HomeController : Controller
         }
     }
 }
+    /*Calculates the total duration of all consultorios by summing up their individual durations. Also prints the average duration per consultorio to the console.*/
 
-
-
-    // codigo no mios
     private int CalcularDuracionGlobal(List<Consultorios> consultorios)
     {
         int total = consultorios.Sum(c => c.Duracion);
         double promedio = consultorios.Count > 0 ? (double)total / consultorios.Count : 0;
 
-        Console.WriteLine($"Promedio de duración por consultorio: {promedio}");
-
+     
         return total;
     }
 
-
+    /* Creates a deep copy of the list of consultorios for simulation purposes.The cloned consultorios contain the same metadata but with empty appointment lists and reset state (not attending, zero duration).*/
+ 
     private List<Consultorios> ClonarConsultorios(List<Consultorios> originales)
     {
         var nuevos = new List<Consultorios>();
