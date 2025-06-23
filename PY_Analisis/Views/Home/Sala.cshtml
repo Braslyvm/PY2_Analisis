@@ -80,9 +80,8 @@
         setInterval(() => {
         const modalAbierto = document.querySelector('.modal-Consultorio[style*="display: block"]');
         if (!modalAbierto) {
-        recargarConsultorios();
-    }
-}, 1000);
+        recargarConsultorios(); }, 1000);
+        
         setInterval(recargarCitas, 1000);
 
         toastr.options = {
